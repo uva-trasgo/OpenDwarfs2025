@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this benchmark suite, please cite the following paper:"
+authors:
+  - given-names: 'Juan José'
+    family-names: 'Ropero'
+    orcid: 'orcid.org/0009−0006−7035−8923'
+  - given-names: 'Manuel'
+    family-names: 'de Castro'
+    orcid: 'orcid.org/0000−0003−3080−5136'
+  - given-names: 'Diego'
+    family-names: 'Llanos'
+    orcid: 'orcid.org/0000−0001−6240−9109'
+title: "OpenDwarfs 2025: Modernizing the OpenDwarfs Benchmark Suite for Heterogeneous Computing"
+date-released: 2025-08
+url: 'https://github.com/uva-trasgo/OpenDwarfs2025'
+preferred-citation:
+  type: article
+  authors:
+    - given-names: 'Juan José'
+      family-names: 'Ropero'
+      orcid: 'orcid.org/0009−0006−7035−8923'
+    - given-names: 'Manuel'
+      family-names: 'de Castro'
+      orcid: 'orcid.org/0000−0003−3080−5136'
+    - given-names: 'Diego R.'
+      family-names: 'Llanos'
+      orcid: 'orcid.org/0000−0001−6240−9109'
+  title: "OpenDwarfs 2025: Modernizing the OpenDwarfs Benchmark Suite for Heterogeneous Computing"
+  doi: '10.5281/zenodo.17044367'
+  journal: "Proceedings of The 23rd International Workshop on Algorithms, Models and Tools for Parallel Computing on Heterogeneous Platforms (HeteroPar 2025)"
+  month: 8
+  year: 2025
+

@@ -12,6 +12,20 @@ OpenDwarfs 2025 aims to restore and enhance the suite's functionality, making it
 
 The current version of OpenDwarfs 2025 has been extensively tested to work on modern CPUs (Intel and AMD), and GPUs (NVIDIA and AMD).
 
+## Citing
+
+If you use OpenDwarfs 2025 in your research, we would appreciate it if you could cite the following paper:
+
+```
+@inproceedings{OpenDwarfs2025,
+    author = {Ropero, Juan and de Castro, Manuel and Llanos, Diego},
+    year = {2025},
+    month = {08},
+    title = {OpenDwarfs 2025: Modernizing the OpenDwarfs Benchmark Suite for Heterogeneous Computing},
+    doi = {10.5281/zenodo.17044367}
+}
+```
+
 Below you can find the original README of the OpenDwarfs benchmark suite (adapted from the one found in the latest version of its repository), which provides more information about the project and its benchmarks.
 
 OpenDwarfs (original README)
