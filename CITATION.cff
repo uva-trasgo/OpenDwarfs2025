@@ -10,11 +10,12 @@ authors:
   - given-names: 'Diego'
     family-names: 'Llanos'
     orcid: 'orcid.org/0000−0001−6240−9109'
-title: "OpenDwarfs 2025: Modernizing the OpenDwarfs Benchmark Suite for Heterogeneous Computing"
+title: "OpenDwarfs 2025"
 date-released: 2025-08
 url: 'https://github.com/uva-trasgo/OpenDwarfs2025'
 preferred-citation:
-  type: article
+  type: conference-paper
+  message: "If you use this benchmark suite, please cite the following paper:"
   authors:
     - given-names: 'Juan José'
       family-names: 'Ropero'
