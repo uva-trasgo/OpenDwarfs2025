@@ -4,6 +4,10 @@ void __kernel copy(
     const unsigned int count)
 {
     int i = get_global_id(0);
-    if (i < count)
+    if (i < count){
         output[i] = input[i];
+        for(int j = 0; j < 500000; j++){
+            output[i]++;
+        }
+    }
 }
