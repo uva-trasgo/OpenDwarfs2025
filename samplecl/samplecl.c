@@ -55,6 +55,7 @@ int main(int argc, char** argv)
 	ocd_options opts = ocd_get_options();
 	int n_platform_id = opts.platform_id;
 	int n_device_id = opts.device_id;
+    int compute_units = opts.compute_units;
 
 
 	#ifdef USEGPU
@@ -65,17 +66,17 @@ int main(int argc, char** argv)
 		dev_type = CL_DEVICE_TYPE_CPU;
 	#endif
 
-	device_og = _ocd_get_device(n_platform_id, n_device_id,dev_type);
+	device_id = _ocd_get_device(n_platform_id, n_device_id,dev_type, compute_units);
 
-    // Sub-devices test
-    cl_device_partition_property props[] = { 
-        CL_DEVICE_PARTITION_BY_COUNTS, 
-        4, // Request exactly 4 cores
-        CL_DEVICE_PARTITION_BY_COUNTS_LIST_END, 
-        0 
-    };
+    // // Sub-devices test
+    // cl_device_partition_property props[] = { 
+    //     CL_DEVICE_PARTITION_BY_COUNTS, 
+    //     4, // Request exactly 4 cores
+    //     CL_DEVICE_PARTITION_BY_COUNTS_LIST_END, 
+    //     0 
+    // };
 
-    clCreateSubDevices(device_og, props, 1, &device_id, NULL);
+    // clCreateSubDevices(device_og, props, 1, &device_id, NULL);
 
     /* Create a compute context */
     context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
