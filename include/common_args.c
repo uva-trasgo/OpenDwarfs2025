@@ -97,6 +97,7 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int comp
     cl_uint nPlatforms = 1;
     char DeviceName[100];
     cl_device_id* devices;
+	cl_uint max_compute_units = 0;
     err = clGetPlatformIDs(0, NULL, &nPlatforms);
     CHECK_ERROR(err);
 
@@ -185,7 +186,6 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int comp
 			printf("The device selected is not CPU, thus partitioning of the device is not possible.\n Falling back to entire device selected.\n");
 		else{
 			//Check max compute units
-			cl_uint max_compute_units;
 			err = clGetDeviceInfo(devices[device], CL_DEVICE_MAX_COMPUTE_UNITS, sizeof (max_compute_units), &max_compute_units, NULL);
 			if(compute_units < -1 || compute_units > max_compute_units){
 				printf("Compute units value is out of range. Max value for compute units is %d\n", max_compute_units);
@@ -209,7 +209,10 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int comp
 	}
 	    
     //Return
-    printf("Device Chosen : %s\n", DeviceName);	
+	if(max_compute_units == 0)
+    	printf("Device Chosen : %s\n", DeviceName);	
+	else
+    	printf("Device Chosen : %s. Partitioned into a Sub-device with %d compute units out of %d\n", DeviceName, compute_units, max_compute_units);	
     return devices[device];
 }
 
