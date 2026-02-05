@@ -732,10 +732,10 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 
 			if(ocdTempEvent != 0) clReleaseEvent(ocdTempEvent);
 			err = clEnqueueNDRangeKernel(m_SolverInfo[device_idx].m_Queue, queen, 1, 0, work_dim, group_dim, 0, 0, &ocdTempEvent);
-					printf("cosa 1 %d, cosa 2 %d\n", work_dim[0], group_dim[0]);
+					//printf("cosa 1 %d, cosa 2 %d\n", work_dim[0], group_dim[0]);
             		clFinish(m_SolverInfo[device_idx].m_Queue);
 					CHECK_ERROR(err);
-					printf("Event error: %p\n", ocdTempEvent);
+					//printf("Event error: %p\n", ocdTempEvent);
             		START_TIMER(ocdTempEvent, OCD_TIMER_KERNEL, "nqueen Kernels", ocdTempTimer)
             		END_TIMER(ocdTempTimer)
 			CHKERR(err, "Launch kernel error");
