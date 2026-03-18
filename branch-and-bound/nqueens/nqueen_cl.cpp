@@ -8,6 +8,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <cstring>
+// #include <sys/time.h>
 #include "nqueen_cl.h"
 #include "../../include/common_args.h"
 
@@ -372,6 +373,9 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 	int total_size = 0;
 	int last_total_size = 0;
 	int device_idx = 0;
+
+	// Accumulator for total host-side measured kernel time
+	// long long debug_total_kernel_time_us = 0;
 	
 	for(int j = 0; j < board_size / 2; j++) {
 
@@ -563,9 +567,19 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 						//CHECK_ERROR(err);
 					}
 
-					if(ocdTempEvent != 0) clReleaseEvent(ocdTempEvent);
+					//if(ocdTempEvent != 0) clReleaseEvent(ocdTempEvent);
+
+					// struct timeval debug_t_start, debug_t_end;
+					// gettimeofday(&debug_t_start, NULL);
+
 					err = clEnqueueNDRangeKernel(m_SolverInfo[device_idx].m_Queue, queen, 1, 0, work_dim, group_dim, 0, 0, &ocdTempEvent);
                 			clFinish(m_SolverInfo[device_idx].m_Queue);
+
+					// gettimeofday(&debug_t_end, NULL);
+					// long long elapsed_us = (debug_t_end.tv_sec - debug_t_start.tv_sec) * 1000000LL + (debug_t_end.tv_usec - debug_t_start.tv_usec);
+					// printf("[DEBUG] First kernel launch host-side time: %lld us\n", elapsed_us);
+					// debug_total_kernel_time_us += elapsed_us;
+
                 			START_TIMER(ocdTempEvent, OCD_TIMER_KERNEL, "nqueen Kernels", ocdTempTimer)
                 			END_TIMER(ocdTempTimer)
 					CHKERR(err, "Launch kernel error");
@@ -730,12 +744,22 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 				//CHECK_ERROR(err);
 			}
 
-			if(ocdTempEvent != 0) clReleaseEvent(ocdTempEvent);
+			//if(ocdTempEvent != 0) clReleaseEvent(ocdTempEvent);
+
+			// struct timeval debug_t_start, debug_t_end;
+			// gettimeofday(&debug_t_start, NULL);
+
 			err = clEnqueueNDRangeKernel(m_SolverInfo[device_idx].m_Queue, queen, 1, 0, work_dim, group_dim, 0, 0, &ocdTempEvent);
 					//printf("cosa 1 %d, cosa 2 %d\n", work_dim[0], group_dim[0]);
             		clFinish(m_SolverInfo[device_idx].m_Queue);
 					CHECK_ERROR(err);
 					//printf("Event error: %p\n", ocdTempEvent);
+
+			// gettimeofday(&debug_t_end, NULL);
+			// long long elapsed_us = (debug_t_end.tv_sec - debug_t_start.tv_sec) * 1000000LL + (debug_t_end.tv_usec - debug_t_start.tv_usec);
+			// printf("[DEBUG] Second kernel launch host-side time: %lld us\n", elapsed_us);
+			// debug_total_kernel_time_us += elapsed_us;
+			
             		START_TIMER(ocdTempEvent, OCD_TIMER_KERNEL, "nqueen Kernels", ocdTempTimer)
             		END_TIMER(ocdTempTimer)
 			CHKERR(err, "Launch kernel error");
@@ -829,6 +853,8 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 	if(unique != 0) {
 		*unique = unique_solutions;
 	}
+
+	// printf("[DEBUG] Total accumulated host-side kernel time: %lld us\n", debug_total_kernel_time_us);
 
 	return solutions;
 }
