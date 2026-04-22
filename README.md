@@ -111,15 +111,16 @@ optimized kernels. It picks up the optimized kernel for the given device type. F
 is GPU and -o option is provided, it will use <kenel\_name>\_opt\_gpu.cl file present in the application directory. 
 These options, if supplied, must follow the executable name and be delimited from the application-specific options by double dashes (--).
 
-General format: ./<executable> [-p <platform> -d <device> | -t <type> -o --] [app-specific options]
+General format: ./<executable> [[-p <platform> -d <device> | -t <type> -o] [-c <compute-units>] --] [app-specific options]
 
-    <platform>	:integer ID of platform to use
-    <device>    :integer ID of device in <platform> to use
-    <type>	    : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)
-    -o          :Optional flag to use the optimzed flag for the device in use
+    <platform>	    : integer ID of platform to use
+    <device>        : integer ID of device in <platform> to use
+    <type>	        : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)
+    -o              : Optional flag to use the optimzed flag for the device in use
+    <compute-units> : Optional flag to specify number of compute-units to use on CPU execution (only if device selected is CPU)
 
-Example1: ./astar -p 0 -d 0 -- (selects device with device ID 0 on platform with platform ID 0)
-Example2: ./astar -t 0 -- (selects CPU device type on default platform with platform ID 0, if available)
+Example1: ./nqueens -p 0 -d 0 -- (selects device with device ID 0 on platform with platform ID 0)
+Example2: ./nqueens -t 0 -c 4 -- (selects CPU device type on default platform with platform ID 0, if available and with only 4 compute units)
 Example2: ./nw -p 0 -d 0 -o -- (Run the optimized dwarf of device ID 0 on platfrom with platform ID 0)
 
 Notes:	If no parameters are supplied, default platform ID is 0 and default device type is CPU.

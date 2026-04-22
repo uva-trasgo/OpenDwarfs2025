@@ -562,13 +562,13 @@ int main(int argc, char ** argv)
 		printf("Max position, seq1 = %d, seq2 = %d\n", maxInfo->nposi, maxInfo->nposj);
 	}
 	tmpTime = 1000.0 * (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) / 1000.0;
-	pfile = fopen("../kernelTime.txt", "at");
-	fprintf(pfile, "verOpencl4:\t%.3f\n", tmpTime);
-	fclose(pfile);
+	// pfile = fopen("../kernelTime.txt", "at");
+	// fprintf(pfile, "verOpencl4:\t%.3f\n", tmpTime);
+	// fclose(pfile);
 
 	//print time
-	printTime_toStandardOutput();
-	printTime_toFile();
+	// printTime_toStandardOutput();
+	// printTime_toFile();
 
 	fclose(pDBLenFile);
 	fclose(pDBDataFile);

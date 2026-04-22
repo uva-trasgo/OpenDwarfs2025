@@ -16,13 +16,24 @@ Running
 
 In srad.h, define either GPU or CPU computation.
 
-Usage: srad [-p <platform> -d <device> | -t <type> --] <rows> <columns> <y1 position of speckle> <y2 position of speckle>
-            <x1 position of speckle> <x2 position of speckle> <lambda value>
-            <num iterations>
+Usage: srad [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <rows> <columns> <y1 position of speckle> <y2 position of speckle>
+            <x1 position of speckle> <x2 position of speckle> <lambda value> <num iterations> [-B <blocksize>] [-o]
 
-	<platform>	:integer ID of platform to use
-    <device>    :integer ID of device in <platform> to use
-    <type>		: device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
+      <rows>             - number of rows
+      <columns>          - number of cols
+      <y1>               - y1 value of the speckle
+      <y2>               - y2 value of the speckle
+      <x1>               - x1 value of the speckle
+      <x2>               - x2 value of the speckle
+      <lamda>            - lambda (0,1)
+      <num iterations>   - number of iterations
+      [-B <blocksize>]   - Set a specific blocksize for calculations
+      [-o]               - Make so output is written to a file
+
+      <platform>	    : integer ID of platform to use
+      <device>        : integer ID of device in <platform> to use
+      <type>		    : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
+      <compute-units> : Optional flag to specify number of compute-units to use on CPU 	
 
 Example: srad 256 256 0 127 0 127 0.5 2
 

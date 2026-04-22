@@ -369,7 +369,8 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 
 	int vec_size = m_bForceVec4 ? 4 : 2;
 
-	unsigned int board_mask = (1 << board_size) - 1;
+	// DANI: Changed type of 1 to be able to shift 32 bits in the maximum board_size case without undefined behaviour
+	unsigned int board_mask = (unsigned int)((1ULL << board_size) - 1);
 	int total_size = 0;
 	int last_total_size = 0;
 	int device_idx = 0;
@@ -408,7 +409,8 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 				forbidden[k] = border_mask;
 			}
 			else if((k + 1) < j || (k + 1) > board_size - j - 1) {
-				forbidden[k] = 1 | (1 << (board_size - 1));
+				// DANI: Changed type of 1 to be able to shift 31 bits in the maximum board_size case without undefined behaviour
+				forbidden[k] = 1 | (1U << (board_size - 1));
 			}
 			else {
 				forbidden[k] = 0;
@@ -848,6 +850,14 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 		if(m_SolverInfo[i].m_ResultBuffer != 0) { clReleaseMemObject(m_SolverInfo[i].m_ResultBuffer); m_SolverInfo[i].m_ResultBuffer = 0; }
 		if(m_SolverInfo[i].m_ForbiddenBuffer != 0) { clReleaseMemObject(m_SolverInfo[i].m_ForbiddenBuffer); m_SolverInfo[i].m_ForbiddenBuffer = 0; }
 		if(m_SolverInfo[i].m_GlobalIndex != 0) { clReleaseMemObject(m_SolverInfo[i].m_GlobalIndex); m_SolverInfo[i].m_GlobalIndex = 0; }
+	}
+
+	
+
+	// DANI: Added nquenes 1 condition
+	if(board_size == 1){
+		solutions = 1;
+		unique_solutions = 1;
 	}
 
 	if(unique != 0) {
