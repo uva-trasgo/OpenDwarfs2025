@@ -111,7 +111,7 @@ optimized kernels. It picks up the optimized kernel for the given device type. F
 is GPU and -o option is provided, it will use <kenel\_name>\_opt\_gpu.cl file present in the application directory. 
 These options, if supplied, must follow the executable name and be delimited from the application-specific options by double dashes (--).
 
-General format: ./<executable> [[-p <platform> -d <device> | -t <type> -o] [-c <compute-units>] --] [app-specific options]
+    General format: ./<executable> [[-p <platform> -d <device> | -t <type> -o] [-c <compute-units>] --] [app-specific options]
 
     <platform>	    : integer ID of platform to use
     <device>        : integer ID of device in <platform> to use
