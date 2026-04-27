@@ -71,7 +71,7 @@ void BFSGraph(int argc, char** argv);
 void helpMenu(){
 	printf("Usage:\n\
 	-i <filename> \n\
-	-l | --localWorkSize\n");
+	-l | --localWorkSize <size>\n");
 	exit(-1);
 }
 
