@@ -8,7 +8,6 @@
 #include <ctime>
 #include <cstdlib>
 #include <cstring>
-// #include <sys/time.h>
 #include "nqueen_cl.h"
 #include "../../include/common_args.h"
 
@@ -358,7 +357,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 		m_SolverInfo[i].m_TotalTime = 0;
 	}
 
-	//std::vector<unsigned int> mask_vector(max_pitch * (4 + 32));//why this way??
 	std::vector<unsigned int> mask_vector(max_pitch * (36));
 	std::vector<unsigned int> results(max_pitch * 4);
 	std::vector<bool> forbidden_written(threads.size());
@@ -369,7 +367,7 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 
 	int vec_size = m_bForceVec4 ? 4 : 2;
 
-	// DANI: Changed type of 1 to be able to shift 32 bits in the maximum board_size case without undefined behaviour
+	// Changed type of 1 to be able to shift 32 bits in the maximum board_size case without undefined behaviour
 	unsigned int board_mask = (unsigned int)((1ULL << board_size) - 1);
 	int total_size = 0;
 	int last_total_size = 0;
@@ -409,7 +407,7 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 				forbidden[k] = border_mask;
 			}
 			else if((k + 1) < j || (k + 1) > board_size - j - 1) {
-				// DANI: Changed type of 1 to be able to shift 31 bits in the maximum board_size case without undefined behaviour
+				// Changed type of 1 to be able to shift 31 bits in the maximum board_size case without undefined behaviour
 				forbidden[k] = 1 | (1U << (board_size - 1));
 			}
 			else {
@@ -515,7 +513,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 
 					//Setting Kernels arguments
 					cl_kernel queen = (j == 0 ? m_SolverInfo[device_idx].m_NQueen1 : m_SolverInfo[device_idx].m_NQueen);
-					//cl_kernel queen = m_SolverInfo[device_idx].m_NQueen;
 					
 					cl_int arg_board_size = board_size;
 					cl_int arg_level = level;
@@ -540,7 +537,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         					START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_ForbiddenBuffer Copy", ocdTempTimer)
         					END_TIMER(ocdTempTimer)
 						CHKERR(err, "Error in writing m_ForbiddenBuffer");
-						//CHECK_ERROR(err);
 						forbidden_written[device_idx] = true;
 					}
 
@@ -550,7 +546,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         				START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_ParamBuffer Copy", ocdTempTimer)
         				END_TIMER(ocdTempTimer)
 					CHKERR(err, "Error in writing m_ParamBuffer");
-					//CHECK_ERROR(err);
 
 					size_t work_dim[1] = { (size_t)(m_SolverInfo[device_idx].m_bEnableVectorize ? m_SolverInfo[device_idx].m_nThreads / vec_size : m_SolverInfo[device_idx].m_nThreads )};
 					size_t* group_dim = 0;
@@ -566,22 +561,10 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         					START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_GlobalIndex Copy", ocdTempTimer)
         					END_TIMER(ocdTempTimer)
 						CHKERR(err, "Error in writing m_GlobalIndex");
-						//CHECK_ERROR(err);
 					}
-
-					//if(ocdTempEvent != 0) clReleaseEvent(ocdTempEvent);
-
-					// struct timeval debug_t_start, debug_t_end;
-					// gettimeofday(&debug_t_start, NULL);
 
 					err = clEnqueueNDRangeKernel(m_SolverInfo[device_idx].m_Queue, queen, 1, 0, work_dim, group_dim, 0, 0, &ocdTempEvent);
                 			clFinish(m_SolverInfo[device_idx].m_Queue);
-
-					// gettimeofday(&debug_t_end, NULL);
-					// long long elapsed_us = (debug_t_end.tv_sec - debug_t_start.tv_sec) * 1000000LL + (debug_t_end.tv_usec - debug_t_start.tv_usec);
-					// printf("[DEBUG] First kernel launch host-side time: %lld us\n", elapsed_us);
-					// debug_total_kernel_time_us += elapsed_us;
-
                 			START_TIMER(ocdTempEvent, OCD_TIMER_KERNEL, "nqueen Kernels", ocdTempTimer)
                 			END_TIMER(ocdTempTimer)
 					CHKERR(err, "Launch kernel error");
@@ -591,8 +574,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 					CHECK_ERROR(err);
 
 					m_SolverInfo[device_idx].m_nLastTotalSize = threads[device_idx];
-
-//					std::cerr << "device [" << device_idx << "]: " << " launch: " << clock() << "\n";
 
 					if(total_size > threads[device_idx]) {
 						// adjust the data array
@@ -661,7 +642,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 			
 			
 			if(ocdTempEvent != 0) {
-//				std::cerr << "get data from device[" << device_idx << "]: " << clock() << "\n";
 
 				// get data from the device
 				err = clEnqueueReadBuffer(m_SolverInfo[device_idx].m_Queue, m_SolverInfo[device_idx].m_ResultBuffer, CL_FALSE, 0, max_pitch * sizeof(int) * 4, &results[0], 0, NULL, &ocdTempEvent);
@@ -708,7 +688,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         			START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_ForbiddenBuffer Copy", ocdTempTimer)
         			END_TIMER(ocdTempTimer)
 				CHKERR(err, "Error in writing m_ForbiddenBuffer");
-				//CHECK_ERROR(err);
 				forbidden_written[device_idx] = true;
 			}
 
@@ -717,7 +696,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         		START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_ParamBuffer Copy", ocdTempTimer)
         		END_TIMER(ocdTempTimer)
 			CHKERR(err, "Error in writing m_ParamBuffer");
-			//CHECK_ERROR(err);
 
 			size_t work_dim[1];
 			if(t_size < m_SolverInfo[device_idx].m_nThreads) {
@@ -743,25 +721,11 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         		START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_GlobalIndex Copy", ocdTempTimer)
         		END_TIMER(ocdTempTimer)
 				CHKERR(err, "Error in writing m_GlobalIndex");
-				//CHECK_ERROR(err);
 			}
 
-			//if(ocdTempEvent != 0) clReleaseEvent(ocdTempEvent);
-
-			// struct timeval debug_t_start, debug_t_end;
-			// gettimeofday(&debug_t_start, NULL);
-
 			err = clEnqueueNDRangeKernel(m_SolverInfo[device_idx].m_Queue, queen, 1, 0, work_dim, group_dim, 0, 0, &ocdTempEvent);
-					//printf("cosa 1 %d, cosa 2 %d\n", work_dim[0], group_dim[0]);
             		clFinish(m_SolverInfo[device_idx].m_Queue);
 					CHECK_ERROR(err);
-					//printf("Event error: %p\n", ocdTempEvent);
-
-			// gettimeofday(&debug_t_end, NULL);
-			// long long elapsed_us = (debug_t_end.tv_sec - debug_t_start.tv_sec) * 1000000LL + (debug_t_end.tv_usec - debug_t_start.tv_usec);
-			// printf("[DEBUG] Second kernel launch host-side time: %lld us\n", elapsed_us);
-			// debug_total_kernel_time_us += elapsed_us;
-			
             		START_TIMER(ocdTempEvent, OCD_TIMER_KERNEL, "nqueen Kernels", ocdTempTimer)
             		END_TIMER(ocdTempTimer)
 			CHKERR(err, "Launch kernel error");
@@ -770,7 +734,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 			CHECK_ERROR(err);
 
 			m_SolverInfo[device_idx].m_nLastTotalSize = t_size;
-			//total_size = 0;
 
 			if(total_size > t_size) {
 				// adjust the data array
@@ -854,7 +817,7 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 
 	
 
-	// DANI: Added nquenes 1 condition
+	// Added nquenes 1 condition
 	if(board_size == 1){
 		solutions = 1;
 		unique_solutions = 1;
@@ -863,8 +826,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 	if(unique != 0) {
 		*unique = unique_solutions;
 	}
-
-	// printf("[DEBUG] Total accumulated host-side kernel time: %lld us\n", debug_total_kernel_time_us);
 
 	return solutions;
 }

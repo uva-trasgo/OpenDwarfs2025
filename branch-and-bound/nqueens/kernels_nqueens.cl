@@ -489,7 +489,6 @@ __kernel __attribute__((reqd_work_group_size(WORK_ITEMS, 1,1))) void nqueen(int 
 #ifdef USE_ATOMICS	
 __kernel __attribute__((reqd_work_group_size(WORK_ITEMS, 1,1))) void nqueen1(int board_size, int level, int threads, int pitch, __global uint* params, __global uint* results, __constant uint* forbidden, __global int* global_index)
 #else
-#warning WORK_ITEMS
 __kernel __attribute__((reqd_work_group_size(WORK_ITEMS, 1,1))) void nqueen1(int board_size, int level, int threads, int pitch, __global uint* params, __global uint* results, __constant uint* forbidden)
 #endif
 {
