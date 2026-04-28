@@ -36,6 +36,7 @@ typedef struct ocd_options
 	int  platform_id;
 	int  device_id;
 	int  device_type;
+    int  compute_units;
     int  optimized;
 } ocd_options;
 extern ocd_options _settings;
@@ -62,7 +63,7 @@ extern cl_command_queue commands;
 extern void _ocd_create_arguments();
 extern ocd_options ocd_get_options();
 extern int ocd_parse(int* argc, char*** argv);
-extern cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type);
+extern cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int compute_units);
 extern int ocd_check_requirements(ocd_requirements* reqs);
 extern void _ocd_expand_list();
 extern void _ocd_add_arg(option o, int size);

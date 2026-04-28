@@ -9,7 +9,7 @@
 // #include <CL/opencl.h>
 // #endif
 
-#define CL_TARGET_OPENCL_VERSION 110
+#define CL_TARGET_OPENCL_VERSION 120
 #include <CL/opencl.h>
 
 #include "../include/rdtsc.h"
@@ -31,6 +31,7 @@ int main(int argc, char** argv)
     size_t local_size;
 
     cl_platform_id platform_id;
+    cl_device_id device_og;
     cl_device_id device_id;
     cl_context context;
     cl_command_queue commands;
@@ -54,6 +55,7 @@ int main(int argc, char** argv)
 	ocd_options opts = ocd_get_options();
 	int n_platform_id = opts.platform_id;
 	int n_device_id = opts.device_id;
+    int compute_units = opts.compute_units;
 
 
 	#ifdef USEGPU
@@ -64,7 +66,8 @@ int main(int argc, char** argv)
 		dev_type = CL_DEVICE_TYPE_CPU;
 	#endif
 
-	device_id = _ocd_get_device(n_platform_id, n_device_id,dev_type);
+	device_id = _ocd_get_device(n_platform_id, n_device_id,dev_type, compute_units);
+
     /* Create a compute context */
     context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
     CHKERR(err, "Failed to create a compute context!");

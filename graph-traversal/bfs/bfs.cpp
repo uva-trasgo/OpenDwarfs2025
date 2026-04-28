@@ -71,7 +71,7 @@ void BFSGraph(int argc, char** argv);
 void helpMenu(){
 	printf("Usage:\n\
 	-i <filename> \n\
-	-l | --localWorkSize L \n");
+	-l | --localWorkSize <size>\n");
 	exit(-1);
 }
 
@@ -116,7 +116,7 @@ void BFSGraph(int argc, char ** argv)
 	fscanf(fp, "%d", &no_of_nodes);
 
 	//We are searching for if the user has set num of threads.
-	if (argc >= 5 && (strcmp(argv[3],"--localWorkSize") == 0 || strcmp(argv[3],"-L") == 0) ){
+	if (argc >= 5 && (strcmp(argv[3],"--localWorkSize") == 0 || strcmp(argv[3],"-l") == 0) ){
 		
 		localWork = atoi(argv[4]);
 		

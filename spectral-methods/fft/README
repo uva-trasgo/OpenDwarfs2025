@@ -11,7 +11,7 @@ Note: This application belongs to the SHOC suite
 Running
 -------
 
-Usage: clfft [-p <platform> -d <device> | -t <type> --][--2D ]
+Usage: clfft [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --][--2D ]
                  [--configFile value]
                  [--device n1,n2,...]
                  [--help ]
@@ -38,9 +38,10 @@ Available Options:
     -s, --size                   specify problem size
     -v, --verbose                enable verbose output
 
-    <platform>	:integer ID of platform to use
-    <device>    :integer ID of device in <platform> to use
-    <type>		: device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
+    <platform>	    : integer ID of platform to use
+	<device>        : integer ID of device in <platform> to use
+	<type>		    : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
+	<compute-units> : Optional flag to specify number of compute-units to use on CPU 	
 
 Example: clfft --pts 1
 

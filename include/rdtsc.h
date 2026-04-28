@@ -1,7 +1,7 @@
 #ifndef __RDTSC_H__
 #define __RDTSC_H__
 
-#define CL_TARGET_OPENCL_VERSION 110//DEFINE VERSION DE OPENCL A USAR EN COMPILACION
+#define CL_TARGET_OPENCL_VERSION 120//DEFINE VERSION DE OPENCL A USAR EN COMPILACION
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,7 +11,7 @@ extern "C" {
 #include <sys/time.h>
 #include "config.h"
 #define CHECK_ERROR(err) {if (err != CL_SUCCESS) { \
-	fprintf(stderr, "Error: %d\n", err);\
+	fprintf(stderr, "Error in %s:%d: %d\n", __FILE__, __LINE__, err);\
 	exit(1); \
 }}
 

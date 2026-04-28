@@ -1,6 +1,6 @@
 #include "common_args.h"
 
-ocd_options _settings = {0, -1, 0, 0};
+ocd_options _settings = {0, -1, 0, -1, 0};
 ocd_requirements _requirements = {0,0,0};
 option* _options = NULL;
 
@@ -9,6 +9,7 @@ int _options_size = 0;
 
 int n_platform;
 int n_device;
+int compute_units;
 int optimized;  //If otimized kernel shall be used
 cl_device_id device_id;
 cl_context context;
@@ -20,12 +21,14 @@ void _ocd_create_arguments()
 {
 	free(_options);
 	_options = (option*)malloc(sizeof(option) * 6);
-	option ops[5] = {{OTYPE_INT, 'p', (char*)"platform", (char*)"OpenCL Platform ID",
+	option ops[6] = {{OTYPE_INT, 'p', (char*)"platform", (char*)"OpenCL Platform ID",
                      OFLAG_NONE, &_settings.platform_id, NULL, NULL, NULL, NULL},
 		{OTYPE_INT, 'd', (char*)"device", (char*)"OpenCL Device ID",
                      OFLAG_NONE, &_settings.device_id, NULL, NULL, NULL, NULL},
         {OTYPE_INT, 't', (char*)"device type", (char*)"OpenCL Device type",
                      OFLAG_NONE, &_settings.device_type, NULL, NULL, NULL, NULL},
+        {OTYPE_INT, 'c', (char*)"compute units", (char*)"OpenCL Sub device compute units",
+                     OFLAG_NONE, &_settings.compute_units, NULL, NULL, NULL, NULL},
         {OTYPE_BOL, 'o', (char*)"Optimized Kernel", (char*)"Use Optimized kernel for the given platform",
                      OFLAG_SET, &_settings.optimized, NULL, NULL, NULL, NULL},
 		{OTYPE_END, '\0', (char*)"", NULL,
@@ -36,8 +39,9 @@ void _ocd_create_arguments()
 	_options[2] = ops[2];
 	_options[3] = ops[3];
 	_options[4] = ops[4];
-	_options_length = 6; // why?
-	_options_size = 5;
+	_options[5] = ops[5];
+	_options_length = 7;
+	_options_size = 6;
 }
 
 ocd_options ocd_get_options()
@@ -87,12 +91,13 @@ int ocd_parse(int* argc, char*** argv)
 	return largc;
 }
 
-cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type)
+cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int compute_units)
 {
     cl_int err;
     cl_uint nPlatforms = 1;
     char DeviceName[100];
     cl_device_id* devices;
+	cl_uint max_compute_units = 0;
     err = clGetPlatformIDs(0, NULL, &nPlatforms);
     CHECK_ERROR(err);
 
@@ -116,7 +121,7 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type)
     printf("Platform Chosen : %s\n", platformName);
 
 
-	//IF given device ID, use this, and disregard -t parameter if given
+	//if given device ID, use this, and disregard -t parameter if given
 	if(device!=-1){
 		err = clGetDeviceIDs(platforms[platform], CL_DEVICE_TYPE_ALL, 0, NULL, &nDevices);
 		printf("Number of available devices: %d\n", nDevices);
@@ -134,7 +139,7 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type)
     	err = clGetDeviceInfo(devices[device], CL_DEVICE_NAME, sizeof (DeviceName), DeviceName, NULL);
     	CHECK_ERROR(err);
 	}
-	//OTHERWISE, check at the device type parameter
+	//otherwise, check at the device type parameter
 	else{
 		// query devices
 		err = clGetDeviceIDs(platforms[platform], dev_type, 0, NULL, &nDevices);
@@ -171,9 +176,43 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type)
     	device=0;
     	CHECK_ERROR(err);	
 	}
+
+	//if compute-units option used, check the device is CPU
+	if(compute_units != -1){
+		cl_device_type device_type;
+    	err = clGetDeviceInfo(devices[device], CL_DEVICE_TYPE, sizeof (device_type), &device_type, NULL);
+    	CHECK_ERROR(err);	
+		if(device_type != CL_DEVICE_TYPE_CPU)
+			printf("The device selected is not CPU, thus partitioning of the device is not possible.\n Falling back to entire device selected.\n");
+		else{
+			//Check max compute units
+			err = clGetDeviceInfo(devices[device], CL_DEVICE_MAX_COMPUTE_UNITS, sizeof (max_compute_units), &max_compute_units, NULL);
+			if(compute_units < -1 || compute_units > max_compute_units){
+				printf("Compute units value is out of range. Max value for compute units is %d\n", max_compute_units);
+        		exit(-4);
+			}else{
+				cl_device_id device_og = devices[device];
+				//Creating sub-device partitioning
+				cl_device_partition_property props[] = { 
+					CL_DEVICE_PARTITION_BY_COUNTS, 
+					compute_units,
+					CL_DEVICE_PARTITION_BY_COUNTS_LIST_END, 
+					0 
+				};
+
+				err = clCreateSubDevices(device_og, props, 1, devices, NULL);
+				device = 0;
+				CHECK_ERROR(err);	
+			}
+		}
+		
+	}
 	    
     //Return
-    printf("Device Chosen : %s\n", DeviceName);	
+	if(max_compute_units == 0)
+    	printf("Device Chosen : %s\n", DeviceName);	
+	else
+    	printf("Device Chosen : %s. Partitioned into a Sub-device with %d compute units out of %d\n", DeviceName, compute_units, max_compute_units);	
     return devices[device];
 }
 
@@ -185,7 +224,7 @@ int ocd_check_requirements(ocd_requirements* reqs)
 	int pass = 1;
 
 	ocd_options opts = ocd_get_options();
-	cl_device_id d_id = _ocd_get_device(opts.platform_id, opts.device_id, opts.device_type);
+	cl_device_id d_id = _ocd_get_device(opts.platform_id, opts.device_id, opts.device_type, opts.compute_units);
 
 	cl_ulong local_mem;
 	clGetDeviceInfo(d_id, CL_DEVICE_LOCAL_MEM_SIZE, sizeof(cl_ulong), &local_mem, NULL);
@@ -289,6 +328,7 @@ void ocd_initCL()
 	ocd_options opts = ocd_get_options();
     n_platform = opts.platform_id;
     n_device = opts.device_id;
+	compute_units = opts.compute_units;
     optimized = opts.optimized;
     _deviceType = opts.device_type;
     printf("Opt.optimized = %0d \n", opts.optimized);
@@ -308,7 +348,7 @@ void ocd_initCL()
 
 	//checkDeviceChoice(_deviceType);//for debugging
 
-	device_id = _ocd_get_device(n_platform, n_device, dev_type);
+	device_id = _ocd_get_device(n_platform, n_device, dev_type, opts.compute_units);
 	
     // Create a compute context
     context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);

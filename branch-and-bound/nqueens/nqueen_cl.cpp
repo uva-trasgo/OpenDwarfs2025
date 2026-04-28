@@ -357,7 +357,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 		m_SolverInfo[i].m_TotalTime = 0;
 	}
 
-	//std::vector<unsigned int> mask_vector(max_pitch * (4 + 32));//why this way??
 	std::vector<unsigned int> mask_vector(max_pitch * (36));
 	std::vector<unsigned int> results(max_pitch * 4);
 	std::vector<bool> forbidden_written(threads.size());
@@ -368,7 +367,8 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 
 	int vec_size = m_bForceVec4 ? 4 : 2;
 
-	unsigned int board_mask = (1 << board_size) - 1;
+	// Changed type of 1 to be able to shift 32 bits in the maximum board_size case without undefined behaviour
+	unsigned int board_mask = (unsigned int)((1ULL << board_size) - 1);
 	int total_size = 0;
 	int last_total_size = 0;
 	int device_idx = 0;
@@ -404,7 +404,8 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 				forbidden[k] = border_mask;
 			}
 			else if((k + 1) < j || (k + 1) > board_size - j - 1) {
-				forbidden[k] = 1 | (1 << (board_size - 1));
+				// Changed type of 1 to be able to shift 31 bits in the maximum board_size case without undefined behaviour
+				forbidden[k] = 1 | (1U << (board_size - 1));
 			}
 			else {
 				forbidden[k] = 0;
@@ -509,7 +510,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 
 					//Setting Kernels arguments
 					cl_kernel queen = (j == 0 ? m_SolverInfo[device_idx].m_NQueen1 : m_SolverInfo[device_idx].m_NQueen);
-					//cl_kernel queen = m_SolverInfo[device_idx].m_NQueen;
 					
 					cl_int arg_board_size = board_size;
 					cl_int arg_level = level;
@@ -534,7 +534,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         					START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_ForbiddenBuffer Copy", ocdTempTimer)
         					END_TIMER(ocdTempTimer)
 						CHKERR(err, "Error in writing m_ForbiddenBuffer");
-						//CHECK_ERROR(err);
 						forbidden_written[device_idx] = true;
 					}
 
@@ -544,7 +543,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         				START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_ParamBuffer Copy", ocdTempTimer)
         				END_TIMER(ocdTempTimer)
 					CHKERR(err, "Error in writing m_ParamBuffer");
-					//CHECK_ERROR(err);
 
 					size_t work_dim[1] = { (size_t)(m_SolverInfo[device_idx].m_bEnableVectorize ? m_SolverInfo[device_idx].m_nThreads / vec_size : m_SolverInfo[device_idx].m_nThreads )};
 					size_t* group_dim = 0;
@@ -560,10 +558,8 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         					START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_GlobalIndex Copy", ocdTempTimer)
         					END_TIMER(ocdTempTimer)
 						CHKERR(err, "Error in writing m_GlobalIndex");
-						//CHECK_ERROR(err);
 					}
 
-					if(ocdTempEvent != 0) clReleaseEvent(ocdTempEvent);
 					err = clEnqueueNDRangeKernel(m_SolverInfo[device_idx].m_Queue, queen, 1, 0, work_dim, group_dim, 0, 0, &ocdTempEvent);
                 			clFinish(m_SolverInfo[device_idx].m_Queue);
                 			START_TIMER(ocdTempEvent, OCD_TIMER_KERNEL, "nqueen Kernels", ocdTempTimer)
@@ -575,8 +571,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 					CHECK_ERROR(err);
 
 					m_SolverInfo[device_idx].m_nLastTotalSize = threads[device_idx];
-
-//					std::cerr << "device [" << device_idx << "]: " << " launch: " << clock() << "\n";
 
 					if(total_size > threads[device_idx]) {
 						// adjust the data array
@@ -645,7 +639,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 			
 			
 			if(ocdTempEvent != 0) {
-//				std::cerr << "get data from device[" << device_idx << "]: " << clock() << "\n";
 
 				// get data from the device
 				err = clEnqueueReadBuffer(m_SolverInfo[device_idx].m_Queue, m_SolverInfo[device_idx].m_ResultBuffer, CL_FALSE, 0, max_pitch * sizeof(int) * 4, &results[0], 0, NULL, &ocdTempEvent);
@@ -692,7 +685,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         			START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_ForbiddenBuffer Copy", ocdTempTimer)
         			END_TIMER(ocdTempTimer)
 				CHKERR(err, "Error in writing m_ForbiddenBuffer");
-				//CHECK_ERROR(err);
 				forbidden_written[device_idx] = true;
 			}
 
@@ -701,7 +693,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         		START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_ParamBuffer Copy", ocdTempTimer)
         		END_TIMER(ocdTempTimer)
 			CHKERR(err, "Error in writing m_ParamBuffer");
-			//CHECK_ERROR(err);
 
 			size_t work_dim[1];
 			if(t_size < m_SolverInfo[device_idx].m_nThreads) {
@@ -727,12 +718,11 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
         		START_TIMER(ocdTempEvent, OCD_TIMER_H2D, "m_GlobalIndex Copy", ocdTempTimer)
         		END_TIMER(ocdTempTimer)
 				CHKERR(err, "Error in writing m_GlobalIndex");
-				//CHECK_ERROR(err);
 			}
 
-			if(ocdTempEvent != 0) clReleaseEvent(ocdTempEvent);
 			err = clEnqueueNDRangeKernel(m_SolverInfo[device_idx].m_Queue, queen, 1, 0, work_dim, group_dim, 0, 0, &ocdTempEvent);
             		clFinish(m_SolverInfo[device_idx].m_Queue);
+					CHECK_ERROR(err);
             		START_TIMER(ocdTempEvent, OCD_TIMER_KERNEL, "nqueen Kernels", ocdTempTimer)
             		END_TIMER(ocdTempTimer)
 			CHKERR(err, "Launch kernel error");
@@ -741,7 +731,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 			CHECK_ERROR(err);
 
 			m_SolverInfo[device_idx].m_nLastTotalSize = t_size;
-			//total_size = 0;
 
 			if(total_size > t_size) {
 				// adjust the data array
@@ -821,6 +810,14 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 		if(m_SolverInfo[i].m_ResultBuffer != 0) { clReleaseMemObject(m_SolverInfo[i].m_ResultBuffer); m_SolverInfo[i].m_ResultBuffer = 0; }
 		if(m_SolverInfo[i].m_ForbiddenBuffer != 0) { clReleaseMemObject(m_SolverInfo[i].m_ForbiddenBuffer); m_SolverInfo[i].m_ForbiddenBuffer = 0; }
 		if(m_SolverInfo[i].m_GlobalIndex != 0) { clReleaseMemObject(m_SolverInfo[i].m_GlobalIndex); m_SolverInfo[i].m_GlobalIndex = 0; }
+	}
+
+	
+
+	// Added nquenes 1 condition
+	if(board_size == 1){
+		solutions = 1;
+		unique_solutions = 1;
 	}
 
 	if(unique != 0) {

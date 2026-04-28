@@ -21,7 +21,7 @@ provided under ./src_test/ subfolder.
 Running
 -------
 
-Usage: crc [-p <platform> -d <device> | -t <type> --] -i <input_file> [hvpw] [-r <num_execs>] [-w <wg_size-1>][-w <wg_size-2>]...[-w <wg_size-m>] [-k <kernel_file-1>][-k <kernel_file-2>]...[-k <kernel_file-n>]
+Usage: crc [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] -i <input_file> [hvpw] [-r <num_execs>] [-w <wg_size-1>][-w <wg_size-2>]...[-w <wg_size-m>] [-k <kernel_file-1>][-k <kernel_file-2>]...[-k <kernel_file-n>]
 	
 	-h | 'Print this help message'
 	-v | 'Increase verbosity level by 1 - Default is 0 - Max is 2'
@@ -32,13 +32,30 @@ Usage: crc [-p <platform> -d <device> | -t <type> --] -i <input_file> [hvpw] [-r
 	-w | 'Loop through each kernel execution 'm' times, once with each wg_size-'1..m' - Default is 1 iteration with wg_size set to the maximum possible (limited either by the device or the size of the input)
 	-k | 'Test CRC 'n' times, once with each kernel_file-'1..n' - Default is 1 kernel named './crc_kernel.xxx' where xxx is 'aocx' if USE_AFPGA is defined, 'cl' otherwise.
 
-	<platform>	:integer ID of platform to use
-    <device>    :integer ID of device in <platform> to use
-    <type>		: device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
+	<platform>		: integer ID of platform to use
+    <device>    	: integer ID of device in <platform> to use
+    <type>			: device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
+    <compute-units> : Optional flag to specify number of compute-units to use on CPU 
     
 Example Usage
 -------------
 
 crc -v -a -i ../test/combinational-logic/crc/crcfile_N16_S1K
 
+Test File Generator
+------------------
+
+The `createcrc` utility generates random input datasets (messages/pages) for the CRC benchmark.
+
+**Usage:** `./createcrc [OPTIONS]`
+
+* `-n <num>` : Number of pages to generate (Default: 1).
+* `-s <size>`: Number of bytes per page (Default: 1024).
+* `-f <path>`: Custom output file path (Default: `../test/combinational-logic/crc/crcfile_...`).
+* `-p`       : Print generated data to standard output.
+* `-R`       : Do not seed the random number generator (produces repeatable results).
+* `-S`       : Do not save the generated messages to a file.
+
+**Example:** Generate 10 pages of 4096 bytes each:
+`./createcrc -n 10 -s 4096`
 
