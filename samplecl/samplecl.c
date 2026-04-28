@@ -68,16 +68,6 @@ int main(int argc, char** argv)
 
 	device_id = _ocd_get_device(n_platform_id, n_device_id,dev_type, compute_units);
 
-    // // Sub-devices test
-    // cl_device_partition_property props[] = { 
-    //     CL_DEVICE_PARTITION_BY_COUNTS, 
-    //     4, // Request exactly 4 cores
-    //     CL_DEVICE_PARTITION_BY_COUNTS_LIST_END, 
-    //     0 
-    // };
-
-    // clCreateSubDevices(device_og, props, 1, &device_id, NULL);
-
     /* Create a compute context */
     context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
     CHKERR(err, "Failed to create a compute context!");

@@ -372,9 +372,6 @@ long long NQueenSolver::Compute(int board_size, long long* unique)
 	int total_size = 0;
 	int last_total_size = 0;
 	int device_idx = 0;
-
-	// Accumulator for total host-side measured kernel time
-	// long long debug_total_kernel_time_us = 0;
 	
 	for(int j = 0; j < board_size / 2; j++) {
 

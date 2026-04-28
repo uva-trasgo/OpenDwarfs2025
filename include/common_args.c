@@ -40,7 +40,7 @@ void _ocd_create_arguments()
 	_options[3] = ops[3];
 	_options[4] = ops[4];
 	_options[5] = ops[5];
-	_options_length = 7; // why?
+	_options_length = 7;
 	_options_size = 6;
 }
 
@@ -121,7 +121,7 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int comp
     printf("Platform Chosen : %s\n", platformName);
 
 
-	//IF given device ID, use this, and disregard -t parameter if given
+	//if given device ID, use this, and disregard -t parameter if given
 	if(device!=-1){
 		err = clGetDeviceIDs(platforms[platform], CL_DEVICE_TYPE_ALL, 0, NULL, &nDevices);
 		printf("Number of available devices: %d\n", nDevices);
@@ -139,7 +139,7 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int comp
     	err = clGetDeviceInfo(devices[device], CL_DEVICE_NAME, sizeof (DeviceName), DeviceName, NULL);
     	CHECK_ERROR(err);
 	}
-	//OTHERWISE, check at the device type parameter
+	//otherwise, check at the device type parameter
 	else{
 		// query devices
 		err = clGetDeviceIDs(platforms[platform], dev_type, 0, NULL, &nDevices);
@@ -177,7 +177,7 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int comp
     	CHECK_ERROR(err);	
 	}
 
-	//IF compute-units option used, check the device is CPU
+	//if compute-units option used, check the device is CPU
 	if(compute_units != -1){
 		cl_device_type device_type;
     	err = clGetDeviceInfo(devices[device], CL_DEVICE_TYPE, sizeof (device_type), &device_type, NULL);
