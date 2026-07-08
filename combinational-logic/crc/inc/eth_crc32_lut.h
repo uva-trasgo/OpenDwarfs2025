@@ -3,7 +3,8 @@
 // see http://create.stephan-brumme.com/disclaimer.html
 //
 
-#ifdef OPENCL
+// Better check that OpenCL is in use
+#if defined(OPENCL) || defined(__OPENCL_C_VERSION__)
 	__constant unsigned int crc32Lookup[8][256] =
 #else
 	static const unsigned int crc32Lookup[8][256] =

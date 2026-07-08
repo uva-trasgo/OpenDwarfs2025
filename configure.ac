@@ -68,6 +68,24 @@ if test ! -z "$OPENCL_SDK_PREFIX" ; then
 fi
 AC_SUBST(OPENCL_SDK_PREFIX)
 
+# Configurations for FPGA kernel compilations for emulation platform
+# Add a flag to enable FPGA offline emulation build
+    AC_ARG_ENABLE([aot-emulation],
+        [AS_HELP_STRING([--enable-aot-emulation], [Compile OpenCL kernels AOT for emulation platform (requires aoc)])],
+        [enable_aot_emulation=$enableval],
+        [enable_aot_emulation=no]
+    )
+    
+    # If enabled, check if the Altera Offline Compiler (aoc) is in the PATH
+    if test "$enable_aot_emulation" = "yes"; then
+        AC_PATH_PROG([AOC_COMPILER], [aoc])
+        if test -z "$AOC_COMPILER"; then
+            AC_MSG_ERROR([aoc (Altera Offline Compiler) is required for AOT emulation but was not found in PATH])
+        fi
+    fi
+    
+    # Export a conditional flag for the Makefiles
+    AM_CONDITIONAL([BUILD_AOT_EMULATION], [test "$enable_aot_emulation" = "yes"])
 
 ### We need OpenCL
 AC_ARG_WITH([opencl], AS_HELP_STRING([--with-opencl],[path to OpenCL]),
