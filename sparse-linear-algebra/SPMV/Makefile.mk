@@ -24,7 +24,24 @@ exec_local += csr-exec-local
 
 csr-all-local:
 	cp $(top_srcdir)/sparse-linear-algebra/SPMV/src/spmv_kernel.cl .
+	cp $(top_srcdir)/sparse-linear-algebra/SPMV/src/spmv_kernel_fpga_optimized.cl .
 
 csr-exec-local:
 	cp $(top_srcdir)/sparse-linear-algebra/SPMV/src/spmv_kernel.cl ${DESTDIR}${bindir}
+	cp $(top_srcdir)/sparse-linear-algebra/SPMV/src/spmv_kernel_fpga_optimized.cl ${DESTDIR}${bindir}
 	
+# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+if BUILD_AOT_EMULATION
+all_local += spmv_kernel_opt_fpga.aocx spmv_kernel.aocx
+exec_local += dwarf-csr-fpga-exec-local
+
+spmv_kernel.aocx: $(top_srcdir)/sparse-linear-algebra/SPMV/src/spmv_kernel.cl
+	$(AOC_COMPILER) -march=emulator $< -o $@
+
+spmv_kernel_opt_fpga.aocx: $(top_srcdir)/sparse-linear-algebra/SPMV/src/spmv_kernel_fpga_optimized.cl
+	$(AOC_COMPILER) -march=emulator $< -o $@
+
+dwarf-csr-fpga-exec-local:
+	cp spmv_kernel.aocx ${DESTDIR}${bindir}
+	cp spmv_kernel_opt_fpga.aocx ${DESTDIR}${bindir}
+endif

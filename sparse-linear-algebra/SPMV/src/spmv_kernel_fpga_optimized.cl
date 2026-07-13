@@ -2,7 +2,7 @@
  */
 #define MANUAL_UNROLL_FACTOR 16
 
-	__attribute__((reqd_work_group_size(256,1,1)))
+	//__attribute__((reqd_work_group_size(256,1,1)))
 void __kernel csr(const unsigned int num_rows,
 		__global const unsigned int* restrict Ap, 
 		__global const unsigned int* restrict Aj, 

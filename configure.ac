@@ -70,22 +70,23 @@ AC_SUBST(OPENCL_SDK_PREFIX)
 
 # Configurations for FPGA kernel compilations for emulation platform
 # Add a flag to enable FPGA offline emulation build
-    AC_ARG_ENABLE([aot-emulation],
-        [AS_HELP_STRING([--enable-aot-emulation], [Compile OpenCL kernels AOT for emulation platform (requires aoc)])],
-        [enable_aot_emulation=$enableval],
-        [enable_aot_emulation=no]
-    )
+AC_ARG_ENABLE([aot-emulation],
+   [AS_HELP_STRING([--enable-aot-emulation], [Compile OpenCL kernels AOT for emulation platform (requires aoc)])],
+   [enable_aot_emulation=$enableval],
+   [enable_aot_emulation=no]
+)
+
+# If enabled, check if the Altera Offline Compiler (aoc) is in the PATH
+if test "$enable_aot_emulation" = "yes"; then
+   AC_DEFINE(__FPGA__, , [Use FPGA])
+   AC_PATH_PROG([AOC_COMPILER], [aoc])
+   if test -z "$AOC_COMPILER"; then
+      AC_MSG_ERROR([aoc (Altera Offline Compiler) is required for AOT emulation but was not found in PATH])
+   fi
+fi
     
-    # If enabled, check if the Altera Offline Compiler (aoc) is in the PATH
-    if test "$enable_aot_emulation" = "yes"; then
-        AC_PATH_PROG([AOC_COMPILER], [aoc])
-        if test -z "$AOC_COMPILER"; then
-            AC_MSG_ERROR([aoc (Altera Offline Compiler) is required for AOT emulation but was not found in PATH])
-        fi
-    fi
-    
-    # Export a conditional flag for the Makefiles
-    AM_CONDITIONAL([BUILD_AOT_EMULATION], [test "$enable_aot_emulation" = "yes"])
+# Export a conditional flag for the Makefiles
+AM_CONDITIONAL([BUILD_AOT_EMULATION], [test "$enable_aot_emulation" = "yes"])
 
 ### We need OpenCL
 AC_ARG_WITH([opencl], AS_HELP_STRING([--with-opencl],[path to OpenCL]),
@@ -95,7 +96,7 @@ if test ! -z "$OPENCL_PREFIX" ; then
    PAC_APPEND_FLAG([-Wl,-rpath=${OPENCL_PREFIX}],[LDFLAGS])
 fi
 
-###Specify build with Altera OpenCL SDK
+###Specify build with Altera OpenCL SDK DEPRECATED
 AC_ARG_WITH([AOCL], AS_HELP_STRING([--with-AOCL],[path to Altera OpenCl SDK]),
 	[AOCL_ROOT=$withval],[AOCL_ROOT=])
 
@@ -107,28 +108,28 @@ AC_CHECK_HEADER([OpenCL/OpenCL.h], [HEADER_APPLE=1], [])
 if test ! -z "$HEADER_LINUX";
 then
     AC_DEFINE(OPENCL_HEADER_CL_CL, 1, [use non-apple header])
-    if test -n "$AOCL_ROOT";
-    then	###If AOCL option passed (build for Altera FPGA)
-   		AC_DEFINE(__FPGA__, , [Use FPGA])
-   		PAC_APPEND_FLAG([-I${AOCL_ROOT}/host/include],[CPPFLAGS])
-   		PAC_APPEND_FLAG([-I${AOCL_ROOT}/host/include/CL],[CPPFLAGS])
-		PAC_APPEND_FLAG([-L${AOCL_ROOT}/board/bittware/linux64/lib],[LDFLAGS])
-		PAC_APPEND_FLAG([-L${AOCL_ROOT}/host/linux64/lib],[LDFLAGS])
-		PAC_APPEND_FLAG([-Wl,-rpath=${AOCL_ROOT}/board/bittware/linux64/lib],[LDFLAGS])
-		PAC_APPEND_FLAG([-Wl,-rpath=${AOCL_ROOT}/host/linux64/lib],[LDFLAGS])
-		PAC_APPEND_FLAG([-lalteracl],[LIBS])
-		PAC_APPEND_FLAG([-ldl],[LIBS])
-		PAC_APPEND_FLAG([-lacl_emulator_kernel_rt],[LIBS])
-		PAC_APPEND_FLAG([-laltera_s5phq_mmd],[LIBS])
-		PAC_APPEND_FLAG([-lalterahalmmd],[LIBS])
-		PAC_APPEND_FLAG([-lelf],[LIBS])
-		PAC_APPEND_FLAG([-lrt],[LIBS])
-		PAC_APPEND_FLAG([-lstdc++],[LIBS])
-    else	### default (CPU or GPU)
+    ### if test -n "$AOCL_ROOT";
+    ### then	### If AOCL option passed (build for Altera FPGA)
+   		### AC_DEFINE(__FPGA__, , [Use FPGA])
+   		### PAC_APPEND_FLAG([-I${AOCL_ROOT}/host/include],[CPPFLAGS])
+   		### PAC_APPEND_FLAG([-I${AOCL_ROOT}/host/include/CL],[CPPFLAGS])
+		### PAC_APPEND_FLAG([-L${AOCL_ROOT}/board/bittware/linux64/lib],[LDFLAGS])
+		### PAC_APPEND_FLAG([-L${AOCL_ROOT}/host/linux64/lib],[LDFLAGS])
+		### PAC_APPEND_FLAG([-Wl,-rpath=${AOCL_ROOT}/board/bittware/linux64/lib],[LDFLAGS])
+		### PAC_APPEND_FLAG([-Wl,-rpath=${AOCL_ROOT}/host/linux64/lib],[LDFLAGS])
+		### PAC_APPEND_FLAG([-lalteracl],[LIBS])
+		### PAC_APPEND_FLAG([-ldl],[LIBS])
+		### PAC_APPEND_FLAG([-lacl_emulator_kernel_rt],[LIBS])
+		### PAC_APPEND_FLAG([-laltera_s5phq_mmd],[LIBS])
+		### PAC_APPEND_FLAG([-lalterahalmmd],[LIBS])
+		### PAC_APPEND_FLAG([-lelf],[LIBS])
+		### PAC_APPEND_FLAG([-lrt],[LIBS])
+		### PAC_APPEND_FLAG([-lstdc++],[LIBS])
+    ### else	### default (CPU or GPU)
     ### Check for the libraries that we need
     	AC_CHECK_LIB(OpenCL,clGetPlatformIDs,[PAC_PREPEND_FLAG([-lOpenCL],[LIBS])],
-        AC_MSG_ERROR([OpenCL library not found]))
-    fi
+      AC_MSG_ERROR([OpenCL library not found]))
+    ### fi
 else
     if test ! -z "$HEADER_APPLE" ; then
         AC_DEFINE(OPENCL_HEADER_LONG, 1 , [use apple header])

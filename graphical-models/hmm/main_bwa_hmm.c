@@ -10,7 +10,7 @@
 #include "../../include/common_args.h"
 
 #ifdef __FPGA__ 
-    #include "cl_ext.h"
+    #include "CL/cl_ext_intelfpga.h"
     #define AOCL_ALIGNMENT 64
 #else 
     #define CL_MEM_BANK_1_ALTERA              0
@@ -255,7 +255,7 @@ float dot_production(int n, cl_mem paramA, int offsetA, cl_mem paramB, int offse
 	float *partialSum = (float*) memalign ( AOCL_ALIGNMENT,n * sizeof(float));
 
 	cl_mem partialSum_d;
-	partialSum_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_1_ALTERA, sizeof(float) * n, NULL, NULL);
+	partialSum_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_1_INTELFPGA, sizeof(float) * n, NULL, NULL);
 	CHECK_NULL_ERROR(commands, "partialSum_d");
 
 	/* set partialSum_d to all zeros */
@@ -857,16 +857,16 @@ float run_hmm_bwa(  Hmm *hmm,
 	}
 
 	/* Allocate device memory */
-	a_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_1_ALTERA, sizeof(float) * nstates * nstates, NULL, NULL);
-	b_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_2_ALTERA, sizeof(float) * nstates * nsymbols, NULL, NULL);
-	pi_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_1_ALTERA, sizeof(float) * nstates, NULL, NULL);
-	alpha_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_2_ALTERA, sizeof(float) * nstates * length, NULL, NULL);
-	beta_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_1_ALTERA, sizeof(float) * nstates * length, NULL, NULL);
-	gamma_sum_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_2_ALTERA, sizeof(float) * nstates, NULL, NULL);
-	xi_sum_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_1_ALTERA, sizeof(float) * nstates * nstates, NULL, NULL);
-	c_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_2_ALTERA, sizeof(float) * nstates, NULL, NULL);
-	ones_n_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_1_ALTERA, sizeof(float) * nstates, NULL, NULL);
-	ones_s_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_MEM_BANK_2_ALTERA, sizeof(float) * nsymbols, NULL, NULL);
+	a_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_1_INTELFPGA, sizeof(float) * nstates * nstates, NULL, NULL);
+	b_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_2_INTELFPGA, sizeof(float) * nstates * nsymbols, NULL, NULL);
+	pi_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_1_INTELFPGA, sizeof(float) * nstates, NULL, NULL);
+	alpha_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_2_INTELFPGA, sizeof(float) * nstates * length, NULL, NULL);
+	beta_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_1_INTELFPGA, sizeof(float) * nstates * length, NULL, NULL);
+	gamma_sum_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_2_INTELFPGA, sizeof(float) * nstates, NULL, NULL);
+	xi_sum_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_1_INTELFPGA, sizeof(float) * nstates * nstates, NULL, NULL);
+	c_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_2_INTELFPGA, sizeof(float) * nstates, NULL, NULL);
+	ones_n_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_1_INTELFPGA, sizeof(float) * nstates, NULL, NULL);
+	ones_s_d = clCreateBuffer(context, CL_MEM_READ_WRITE|CL_CHANNEL_2_INTELFPGA, sizeof(float) * nsymbols, NULL, NULL);
 
 	CHECK_NULL_ERROR( a_d, "Error creating buffer for a_d");
 	CHECK_NULL_ERROR( b_d, "Error creating buffer for  b_d");
