@@ -113,12 +113,14 @@ runTest( int argc, char** argv)
 
 		if (argc>9){
 			if(strcmp(argv[9],"-B")==0){
-				BLOCK_SIZE = atoi(argv[10]) >=16 ? atoi(argv[10]) : 16;
-				out = argc==12 ? 1 : 0;
+				// Correctly check argc before dereferencing any potentially out-of-bounds indices in argv
+				BLOCK_SIZE = (argc > 10 && argv[10]) ? (atoi(argv[10]) >=16 ? atoi(argv[10]) : 16) : 16;
+				out = argc>=12 ? 1 : 0;
 			
 			}else if(strcmp(argv[9],"-o")==0){
 				out++;
-				if(strcmp(argv[10],"-B")==0)
+				// Correctly check argc before dereferencing any potentially out-of-bounds indices in argv
+				if(argc > 11 && strcmp(argv[10],"-B")==0)
 					BLOCK_SIZE = atoi(argv[11]) >=16 ? atoi(argv[11]) : 16;
 			}
 			else
