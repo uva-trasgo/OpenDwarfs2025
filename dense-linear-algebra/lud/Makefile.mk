@@ -25,3 +25,15 @@ lud-all-local:
 lud-exec-local:
 	cp $(top_srcdir)/dense-linear-algebra/lud/lud_kernel.cl ${DESTDIR}${bindir}
 	cp $(top_srcdir)/dense-linear-algebra/lud/lud_kernel_opt_gpu.cl ${DESTDIR}${bindir}
+
+# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+if BUILD_AOT_EMULATION
+all_local += lud_kernel.aocx
+exec_local += dwarf-lud-fpga-exec-local
+
+lud_kernel.aocx: $(top_srcdir)/dense-linear-algebra/lud/lud_kernel.cl
+	$(AOC_COMPILER) -march=emulator $< -o $@
+
+dwarf-lud-fpga-exec-local:
+	cp lud_kernel.aocx ${DESTDIR}${bindir}
+endif

@@ -5,6 +5,9 @@
 // define this to use predicated version in the rotation check part
 #define PREDICATED
 
+#ifndef USE_ATOMICS
+#define USE_ATOMICS
+#endif
 
 #ifdef USE_ATOMICS
 #pragma OPENCL EXTENSION cl_khr_global_int32_base_atomics : enable
@@ -14,6 +17,9 @@
 #pragma OPENCL EXTENSION cl_khr_byte_addressable_store : enable
 #endif
 
+#ifndef WORK_ITEMS
+#define WORK_ITEMS 256
+#endif
 
 inline int bit_scan(unsigned int x)
 {

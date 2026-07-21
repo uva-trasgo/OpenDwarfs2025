@@ -17,3 +17,15 @@ nqueens-all-local:
 
 nqueens-exec-local:
 	cp $(top_srcdir)/branch-and-bound/nqueens/kernels_nqueens.cl ${DESTDIR}${bindir}
+
+# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+if BUILD_AOT_EMULATION
+all_local += kernels_nqueens.aocx
+exec_local += dwarf-nqueens-fpga-exec-local
+
+kernels_nqueens.aocx: $(top_srcdir)/branch-and-bound/nqueens/kernels_nqueens.cl
+	$(AOC_COMPILER) -g0 -march=emulator $< -o $@
+
+dwarf-nqueens-fpga-exec-local:
+	cp kernels_nqueens.aocx ${DESTDIR}${bindir}
+endif

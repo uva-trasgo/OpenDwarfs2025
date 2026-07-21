@@ -17,3 +17,15 @@ dwarf-cfd-all-local:
 
 dwarf-cfd-exec-local:
 	cp $(top_srcdir)/unstructured-grids/cfd/cfd_kernel.cl ${DESTDIR}${bindir}
+
+# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+if BUILD_AOT_EMULATION
+all_local += cfd_kernel.aocx
+exec_local += dwarf-cfd-fpga-exec-local
+
+cfd_kernel.aocx: $(top_srcdir)/unstructured-grids/cfd/cfd_kernel.cl
+	$(AOC_COMPILER) -march=emulator $< -o $@
+
+dwarf-cfd-fpga-exec-local:
+	cp cfd_kernel.aocx ${DESTDIR}${bindir}
+endif

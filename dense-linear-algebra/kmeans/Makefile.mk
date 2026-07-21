@@ -28,3 +28,15 @@ kmeans-all-local:
 kmeans-exec-local:
 	cp $(top_srcdir)/dense-linear-algebra/kmeans/kmeans_opencl_kernel.cl ${DESTDIR}${bindir}
 	cp $(top_srcdir)/dense-linear-algebra/kmeans/kmeans_opencl_kernel_out_gpu.cl ${DESTDIR}${bindir}
+
+# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+if BUILD_AOT_EMULATION
+all_local += kmeans_opencl_kernel.aocx
+exec_local += dwarf-kmeans-fpga-exec-local
+
+kmeans_opencl_kernel.aocx: $(top_srcdir)/dense-linear-algebra/kmeans/kmeans_opencl_kernel.cl
+	$(AOC_COMPILER) -march=emulator $< -o $@
+
+dwarf-kmeans-fpga-exec-local:
+	cp kmeans_opencl_kernel.aocx ${DESTDIR}${bindir}
+endif

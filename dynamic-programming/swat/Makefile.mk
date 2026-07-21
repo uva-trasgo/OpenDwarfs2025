@@ -28,3 +28,15 @@ swat-all-local:
 
 swat-exec-local:
 	cp $(top_srcdir)/dynamic-programming/swat/kernels.cl ${DESTDIR}${bindir}
+
+# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+if BUILD_AOT_EMULATION
+all_local += kernels.aocx
+exec_local += dwarf-swat-fpga-exec-local
+
+kernels.aocx: $(top_srcdir)/dynamic-programming/swat/kernels.cl
+	$(AOC_COMPILER) -march=emulator $< -o $@
+
+dwarf-swat-fpga-exec-local:
+	cp kernels.aocx ${DESTDIR}${bindir}
+endif

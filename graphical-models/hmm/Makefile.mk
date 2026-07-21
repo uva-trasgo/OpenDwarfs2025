@@ -20,6 +20,17 @@ bwa_hmm-all-local:
 bwa_hmm-exec-local:
 	cp $(top_srcdir)/graphical-models/hmm/bwa_hmm_opencl.cl ${DESTDIR}${bindir}
 
+# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+if BUILD_AOT_EMULATION
+all_local += bwa_hmm_opencl.aocx
+exec_local += dwarf-bwa-hmm-fpga-exec-local
+
+bwa_hmm_opencl.aocx: $(top_srcdir)/graphical-models/hmm/bwa_hmm_opencl.cl
+	$(AOC_COMPILER) -g0 -march=emulator $< -o $@
+
+dwarf-bwa_hmm-fpga-exec-local:
+	cp bwa_hmm_opencl.aocx ${DESTDIR}${bindir}
+endif
 
 	
 
