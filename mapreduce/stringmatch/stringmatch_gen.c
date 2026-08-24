@@ -6,7 +6,9 @@
 #include "word_pool.h"
 
 
-#define NUM_TARGETS 5
+#define TEST_NUM_TARGETS 5
+#define TRAIN_NUM_TARGETS 10
+#define REF_NUM_TARGETS 15
 #define TEST_SIZE 30000000
 #define TRAIN_SIZE 500000000
 #define REF_SIZE 1000000000
@@ -49,7 +51,7 @@ void printHelp(){
                                   over the value. Default %d\n\
             -t                  : Create test, train and ref files.\n\
 		Execution example:\n\
-			./stringmatch_gen -n 7 -s 2048 \n",NUM_TARGETS,TEST_SIZE);
+			./stringmatch_gen -n 7 -s 2048 \n",TEST_NUM_TARGETS,TEST_SIZE);
 }
 
 void directory_structure(){
@@ -79,7 +81,7 @@ int main( int argc, char *argv[] ){
     char* endptr = NULL;
 
     size_t targetsSize = 0;
-    size_t targets[] = {NUM_TARGETS, NUM_TARGETS, NUM_TARGETS, NUM_TARGETS};
+    size_t targets[] = {TEST_NUM_TARGETS, TEST_NUM_TARGETS, TRAIN_NUM_TARGETS, REF_NUM_TARGETS};
     size_t sizes[] = {TEST_SIZE, TEST_SIZE, TRAIN_SIZE, REF_SIZE};
     size_t genLen = 0;
     size_t genCapacity = 0;
