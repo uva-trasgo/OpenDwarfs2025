@@ -28,18 +28,19 @@ dwarf-crc-exec-local:
 	cp $(top_srcdir)/combinational-logic/crc/src/crc_kernel.cl ${DESTDIR}${bindir}
 	cp $(top_srcdir)/combinational-logic/crc/src/crc_kernel_fpga_optimized.cl ${DESTDIR}${bindir}
 
-# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
-if BUILD_AOT_EMULATION
+# Compilation targets for FPGA AOT compilation (Emulation or Board Synthesis)
+if BUILD_AOT
 all_local += crc_kernel_opt_fpga.aocx crc_kernel.aocx
 exec_local += dwarf-crc-fpga-exec-local
 
 crc_kernel.aocx: $(top_srcdir)/combinational-logic/crc/src/crc_kernel.cl
-	$(AOC_COMPILER) -march=emulator $< -o $@
+	$(AOC_COMPILER) $(AOC_FLAGS) $< -o $@
 
 crc_kernel_opt_fpga.aocx: $(top_srcdir)/combinational-logic/crc/src/crc_kernel_fpga_optimized.cl
-	$(AOC_COMPILER) -march=emulator $< -o $@
+	$(AOC_COMPILER) $(AOC_FLAGS) $< -o $@
 
 dwarf-crc-fpga-exec-local:
 	cp crc_kernel.aocx ${DESTDIR}${bindir}
 	cp crc_kernel_opt_fpga.aocx ${DESTDIR}${bindir}
 endif
+

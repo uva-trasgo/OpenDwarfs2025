@@ -77,6 +77,11 @@ To build:
     gcc
     maker
 
+To build for FPGA:
+
+    aoc (We have only tested with version 21.2.0 but other versions may work)
+    FPGA board Packages (of the FPGA wanted)
+
 To run:
 
     opencl libs
@@ -91,6 +96,14 @@ To build all of the included applications:
     $ cd build
     $ ../configure
     $ make
+
+To build for FPGA emulation:
+
+    $ ../configure --enable-aot-emulation --with-opencl-sdk=(may be needed to specify the OpenCL SDK path)
+
+To build for an specific FPGA board:
+    
+    $ ../configure --enable-aoc-board-compilation [--with-board-package=(path to FPGA board package) | --with-board=(board name installed in DK board directory)] --with-opencl-sdk=(may be needed to specify the OpenCL SDK path)
 
 To build only the applications you select, call configure with the --with-apps
 option:
@@ -108,7 +121,7 @@ See the application-specific README file in each application's directory.
 All the dwarf applications support a common list of options for optionally specifying the OpenCL platform ID (-p)
 and OpenCL device ID (-d), or alternatively, the device type (-t). Optionally you can provide -o option to use 
 optimized kernels. It picks up the optimized kernel for the given device type. For an example, if the device in use 
-is GPU and -o option is provided, it will use <kenel\_name>\_opt\_gpu.cl file present in the application directory. 
+is GPU and -o option is provided, it will use <kernel\_name>\_opt\_gpu.cl file present in the application directory. 
 These options, if supplied, must follow the executable name and be delimited from the application-specific options by double dashes (--).
 
     General format: ./<executable> [[-p <platform> -d <device> | -t <type> -o] [-c <compute-units>] --] [app-specific options]

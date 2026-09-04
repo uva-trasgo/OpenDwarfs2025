@@ -25,8 +25,8 @@ if BUILD_AOT_EMULATION
 all_local += fft.aocx
 exec_local += dwarf-fft-fpga-exec-local
 
+# Static defines needed for compilation since it cant be defined during execution
 fft.aocx: $(top_srcdir)/spectral-methods/fft/src/opencl/fft/fft.cl
-	# Static defines needed for compilation since it cant be defined during execution
 	$(AOC_COMPILER) -march=emulator -DFFT_128 -DFFT_256 -DFFT_512 -DFFT_1024 -DFFT_2048 -DFFT_4096 -DFFT_8192 -Dfftn1=1024 -Dpow1=64 $< -o $@
 
 dwarf-fft-fpga-exec-local:

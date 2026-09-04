@@ -68,25 +68,69 @@ if test ! -z "$OPENCL_SDK_PREFIX" ; then
 fi
 AC_SUBST(OPENCL_SDK_PREFIX)
 
-# Configurations for FPGA kernel compilations for emulation platform
-# Add a flag to enable FPGA offline emulation build
+# ==============================================================================
+# OpenCL AOT Compilation (AOC) Configuration (Emulation & FPGA Board Synthesis)
+# ==============================================================================
+
+# 1. Mode selection flags
 AC_ARG_ENABLE([aot-emulation],
-   [AS_HELP_STRING([--enable-aot-emulation], [Compile OpenCL kernels AOT for emulation platform (requires aoc)])],
+   [AS_HELP_STRING([--enable-aot-emulation], [Compile OpenCL kernels AOT for CPU emulation (requires aoc)])],
    [enable_aot_emulation=$enableval],
    [enable_aot_emulation=no]
 )
 
-# If enabled, check if the Altera Offline Compiler (aoc) is in the PATH
-if test "$enable_aot_emulation" = "yes"; then
-   AC_DEFINE(__FPGA__, , [Use FPGA])
+AC_ARG_ENABLE([aoc-board-compilation],
+   [AS_HELP_STRING([--enable-aoc-board-compilation], [Compile OpenCL kernels for an FPGA board (requires aoc and board package)])],
+   [enable_aoc_board_compilation=$enableval],
+   [enable_aoc_board_compilation=no]
+)
+
+# 2. Board specification flags
+AC_ARG_WITH([board-package],
+   [AS_HELP_STRING([--with-board-package=DIR], [Path to custom FPGA Board Package (e.g., $HOME/FPGABoards/de10_agilex)])],
+   [BOARD_PACKAGE=$withval],
+   [BOARD_PACKAGE=""]
+)
+
+AC_ARG_WITH([board],
+   [AS_HELP_STRING([--with-board=NAME], [FPGA Board name for installed boards (e.g., de10_agilex)])],
+   [BOARD_NAME=$withval],
+   [BOARD_NAME=""]
+)
+
+# 3. Compiler & flag validation
+if test "$enable_aot_emulation" = "yes" && test "$enable_aoc_board_compilation" = "yes"; then
+   AC_MSG_ERROR([Cannot enable both --enable-aot-emulation and --enable-aoc-board-compilation. Please choose one.])
+fi
+
+if test "$enable_aot_emulation" = "yes" || test "$enable_aoc_board_compilation" = "yes"; then
+   AC_DEFINE(__FPGA__, 1, [Use FPGA])
    AC_PATH_PROG([AOC_COMPILER], [aoc])
    if test -z "$AOC_COMPILER"; then
-      AC_MSG_ERROR([aoc (Altera Offline Compiler) is required for AOT emulation but was not found in PATH])
+      AC_MSG_ERROR([aoc (Altera Offline Compiler) is required for AOT compilation but was not found in PATH])
+   fi
+
+   if test "$enable_aot_emulation" = "yes"; then
+      AOC_FLAGS="-march=emulator"
+   else
+      # FPGA Board compilation
+      if test -n "$BOARD_PACKAGE"; then
+         AOC_BOARD_ARG="-board-package=${BOARD_PACKAGE}"
+      elif test -n "$BOARD_NAME"; then
+         AOC_BOARD_ARG="-board=${BOARD_NAME}"
+      else
+         AC_MSG_ERROR([--enable-aoc-board-compilation requires --with-board-package=<path> or --with-board=<name>])
+      fi
+      AOC_FLAGS="-v -report -fast-compile -I. ${AOC_BOARD_ARG}"
    fi
 fi
-    
-# Export a conditional flag for the Makefiles
+
+AC_SUBST([AOC_FLAGS])
+
+# 4. Automake Conditionals
+AM_CONDITIONAL([BUILD_AOT], [test "$enable_aot_emulation" = "yes" || test "$enable_aoc_board_compilation" = "yes"])
 AM_CONDITIONAL([BUILD_AOT_EMULATION], [test "$enable_aot_emulation" = "yes"])
+AM_CONDITIONAL([BUILD_AOC_BOARD], [test "$enable_aoc_board_compilation" = "yes"])
 
 ### We need OpenCL
 AC_ARG_WITH([opencl], AS_HELP_STRING([--with-opencl],[path to OpenCL]),
