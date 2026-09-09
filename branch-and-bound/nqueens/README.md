@@ -16,7 +16,7 @@ Note: This program has been adapted from http://forum.beyond3d.com/showthread.ph
 Running
 -------
 
-Usage: nqueens [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [options] N
+Usage: `nqueens [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [options] N`
 
 	-cpu: use CPU implementation (single threaded)
 	N: the board size (1 ~ 32)
@@ -26,5 +26,5 @@ Usage: nqueens [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --]
     <type>			: device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
     <compute-units> : Optional flag to specify number of compute-units to use on CPU 
     
-Example: ./nqueens 16
+Example: `./nqueens 16`
 

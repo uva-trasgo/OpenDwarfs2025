@@ -12,18 +12,18 @@ then sums each bucket into a final count. Available parallelism scales with
 the size of the input text rather than with the number of targets being
 searched for.
 
-Note: This benchmark is a MapReduce port based on StreamMR
-      https://github.com/vtsynergy/StreamMR/tree/master.
-      The full license associated is in ./LICENSE.md
+Note: This benchmark is a MapReduce port based on StreamMR https://github.com/vtsynergy/StreamMR/tree/master. 
+
+The full license associated is in ./LICENSE.md
 
 Running
 -------
 
 
-Usage: stringmatch [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [options]
+Usage: `stringmatch [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [options]`
 
-    -i input-file     :file with targets (comma-separated, first line) and text to search (remaining lines)
-    -h                :print this help message
+    -i input-file     : file with targets (comma-separated, first line) and text to search (remaining lines)
+    -h                : print this help message
 
     <platform>	      : integer ID of platform to use
     <device>          : integer ID of device in <platform> to use

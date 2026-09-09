@@ -2,7 +2,7 @@ bin_PROGRAMS += stringmatch
 bin_PROGRAMS += stringmatch_gen
 
 stringmatch_SOURCES = mapreduce/stringmatch/stringmatch.c
-stringmatch_CFLAGS = -g3 -O0
+stringmatch_CFLAGS = -O3 #-g3 -O0
 
 stringmatch_gen_SOURCES = mapreduce/stringmatch/stringmatch_gen.c
 

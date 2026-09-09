@@ -15,22 +15,23 @@ requires a step to process the data.
 Running
 -------
 
-Usage: csr [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] -i <file_path> [-v] [-c] [-p] [-a] [-r <num_execs>] [-k <kernel_file-1>][-k <kernel_file-2>]...[-k <kernel_file-n>] [-w <wg_size-1>][-w <wg_size-2>]...[-w <wg_size-m>]
-    		-i: Read CSR Matrix from file <file_path>
-    		-k: Test SPMV 'n' times, once with each kernel_file-'1..n' - Default is 1 kernel named './spmv_csr_kernel.xxx' where xxx is 'aocx' if USE_AFPGA is defined, 'cl' otherwise.
-    		-v: Increase verbosity level by 1 - Default is 0 - Max is 2
-    		-c: use CPU
-    		-p: Print matrices to stdout in standard (2-D Array) format - Warning: lots of output
-    		-a: Affirm results with serial C code on CPU
-    		-r: Execute program with same data exactly <num_execs> times to increase sample size - Default is 1
-    		-w: Loop through each kernel execution 'm' times, once with each wg_size-'1..m' - Default is 1 iteration with wg_size set to the maximum possible (limited either by the device or the size of the input)
+Usage: `csr [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] -i <file_path> [-v] [-c] [-p] [-a] [-r <num_execs>] [-k <kernel_file-1>][-k <kernel_file-2>]...[-k <kernel_file-n>] [-w <wg_size-1>][-w <wg_size-2>]...[-w <wg_size-m>]`
+
+	-i: Read CSR Matrix from file <file_path>
+	-k: Test SPMV 'n' times, once with each kernel_file-'1..n' - Default is 1 kernel named './spmv_csr_kernel.xxx' where xxx is 'aocx' if USE_AFPGA is defined, 'cl' otherwise.
+	-v: Increase verbosity level by 1 - Default is 0 - Max is 2
+	-c: use CPU
+	-p: Print matrices to stdout in standard (2-D Array) format - Warning: lots of output
+	-a: Affirm results with serial C code on CPU
+	-r: Execute program with same data exactly <num_execs> times to increase sample size - Default is 1
+	-w: Loop through each kernel execution 'm' times, once with each wg_size-'1..m' - Default is 1 iteration with wg_size set to the maximum possible (limited either by the device or the size of the input)
 
 	<platform>	    : integer ID of platform to use
 	<device>        : integer ID of device in <platform> to use
 	<type>		    : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
 	<compute-units> : Optional flag to specify number of compute-units to use on CPU 
 
-Example: csr -v -p -a -i ../test/sparse-linear-algebra/SPMV/csrmatrix_R1_N4_D500000_S01
+Example: `csr -v -p -a -i ../test/sparse-linear-algebra/SPMV/csrmatrix_R1_N4_D500000_S01`
 
 Notes
 -----

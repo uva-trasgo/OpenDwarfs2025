@@ -13,12 +13,12 @@ This is the stripped down version with no graphical interface. It takes
 your molecular coordinates (.pqr) on input and produces the potential 
 around it. 
 
-COMPILE: ./build.sh 
+COMPILE: `./build.sh` 
 
 Running
 -------
 
-Usage: gemnoui [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [molname diel_ext diel_int salinity] <options>
+Usage: `gemnoui [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [molname diel_ext diel_int salinity] <options>`
 molname, diel_ext, diel_int, and salinity are all required together if present
 molname is the name of the molecule
 diel_ext is the exterior dielectric charge
@@ -38,7 +38,7 @@ and <options> can be any combination of the following:
     <compute-units> : Optional flag to specify number of compute-units to use on CPU 	
 
 Example:
-gemnoui test/n-body-methods/gem/Mb.Hhelix.bondi 80 1 0 -dumpVertices phi.out 
+`gemnoui test/n-body-methods/gem/Mb.Hhelix.bondi 80 1 0 -dumpVertices phi.out` 
 
 This assumes that you have Mb.Hhelix.bondi.pqr (structure + charges + radii) 
 file in the directory you run gemnoui. If you don't have MSMS installed, 
@@ -50,19 +50,19 @@ the molecule and the salt concentration in water. Just keep them as above.
 The potential is dumped into phi.out. If everything worked, this file should 
 look like this: 
 
-X    Y    Z     potential
--9.128000 24.915001 -1.628000    2.897841
--9.102000 24.650999 -2.487000    2.902089
--8.938000 24.643999 -2.007000    2.986913
--8.842000 26.209999 -2.958000    2.624459
-........................................
-(about 5800 lines here)
+	X    	  Y    		 Z     	 	 potential
+	-9.128000 24.915001 -1.628000    2.897841
+	-9.102000 24.650999 -2.487000    2.902089
+	-8.938000 24.643999 -2.007000    2.986913
+	-8.842000 26.209999 -2.958000    2.624459
+	........................................
+	(about 5800 lines here)
 
 Here Mb.Hhelix.bondi is a relatively small structure, the computation takes 
 a few seconds on a 2GHZ PC. If you want something substantial, try the 
 nucleosome: 
 
-gemnoui nucleosome 80 1 0 -dumpVertices phi.out
+`gemnoui nucleosome 80 1 0 -dumpVertices phi.out`
 
 This will take about 1/2 hour or so. 
 

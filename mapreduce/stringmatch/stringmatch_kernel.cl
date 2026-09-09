@@ -171,21 +171,21 @@ void reduce(__global void *key,
 }
 
 __kernel void  reducer( __global char*       targetsText,
-                         __global int2*      targetOffsetSizes,
-                         __global uint*      targetBucketOffsets,
-                         __global uint*      targetBucketCapacities,
-                         __global uint*      targetMatchCounts,
-                         __global int4*      interOffsetSizes,
-                         __global char*      interVals,
-		        __global uint*		psKeySizes,
-		        __global uint*		psValSizes,
-	  	        __global uint*		psCounts,
-		        __global char*		outputKeys,
-			__global char*		outputVals,
-			__global int4*		outputOffsetSizes,
-			int		recordNum,        /* = numTargets */
-			int		recordsPerTask,
-			int		taskNum)
+                        __global int2*      targetOffsetSizes,
+                        __global uint*      targetBucketOffsets,
+                        __global uint*      targetBucketCapacities,
+                        __global uint*      targetMatchCounts,
+                        __global int4*      interOffsetSizes,
+                        __global char*      interVals,
+                        __global uint*		psKeySizes,
+                        __global uint*		psValSizes,
+                        __global uint*		psCounts,
+                        __global char*		outputKeys,
+                        __global char*		outputVals,
+                        __global int4*		outputOffsetSizes,
+                        int		recordNum,        /* = numTargets */
+                        int		recordsPerTask,
+                        int		taskNum)
 {
 	int index = get_global_id(0);
 	int bid = get_group_id(0);
