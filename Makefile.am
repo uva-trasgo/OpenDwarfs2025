@@ -112,6 +112,11 @@ include graphical-models/hmm/Makefile.mk
 testruns += bwa_hmm
 endif
 
+if build_stringmatch
+include mapreduce/stringmatch/Makefile.mk
+testruns += stringmatch
+endif
+
 all-local: $(all_local)
 
 install-exec-local: $(exec_local)

@@ -12,7 +12,7 @@ Note: This application was ported from the Rodinia Suite
 Running
 -------
 
-Usage: lud [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [options] -i <input_file>
+Usage: `lud [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [options] -i <input_file>`
 
     -i input_file :file containing the original matrix
     -v            :verify the computation and print differences, if any
@@ -22,4 +22,4 @@ Usage: lud [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [op
     <type>		    : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
     <compute-units> : Optional flag to specify number of compute-units to use on CPU 
 
-Example: lud -i test/dense-linear-albebra/lud/64.dat 
+Example: `lud -i test/dense-linear-albebra/lud/64.dat`

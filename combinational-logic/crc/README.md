@@ -21,7 +21,7 @@ provided under ./src_test/ subfolder.
 Running
 -------
 
-Usage: crc [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] -i <input_file> [hvpw] [-r <num_execs>] [-w <wg_size-1>][-w <wg_size-2>]...[-w <wg_size-m>] [-k <kernel_file-1>][-k <kernel_file-2>]...[-k <kernel_file-n>]
+Usage: `crc [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] -i <input_file> [hvpw] [-r <num_execs>] [-w <wg_size-1>][-w <wg_size-2>]...[-w <wg_size-m>] [-k <kernel_file-1>][-k <kernel_file-2>]...[-k <kernel_file-n>]`
 	
 	-h | 'Print this help message'
 	-v | 'Increase verbosity level by 1 - Default is 0 - Max is 2'
@@ -40,7 +40,7 @@ Usage: crc [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] -i 
 Example Usage
 -------------
 
-crc -v -a -i ../test/combinational-logic/crc/crcfile_N16_S1K
+`crc -v -a -i ../test/combinational-logic/crc/crcfile_N16_S1K`
 
 Test File Generator
 ------------------
