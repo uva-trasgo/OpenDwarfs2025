@@ -98,6 +98,7 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int comp
     char DeviceName[100];
     cl_device_id* devices;
 	cl_uint max_compute_units = 0;
+	cl_device_type device_type;
     err = clGetPlatformIDs(0, NULL, &nPlatforms);
     CHECK_ERROR(err);
 
@@ -137,12 +138,28 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int comp
     	devices = (cl_device_id *) malloc(sizeof (cl_device_id) * nDevices);
 		err = clGetDeviceIDs(platforms[platform], CL_DEVICE_TYPE_ALL, nDevices, devices, NULL);
     	err = clGetDeviceInfo(devices[device], CL_DEVICE_NAME, sizeof (DeviceName), DeviceName, NULL);
+    	err = clGetDeviceInfo(devices[device], CL_DEVICE_TYPE, sizeof (device_type), &device_type, NULL);
     	CHECK_ERROR(err);
+
+		switch(device_type){
+			case CL_DEVICE_TYPE_GPU:
+				_deviceType = 1;
+				break;
+			// No current support for mics
+			case CL_DEVICE_TYPE_ACCELERATOR:
+				_deviceType = 3;
+				break;
+			default:
+				_deviceType = 0;
+		}
 	}
 	//otherwise, check at the device type parameter
 	else{
-		// query devices
-		err = clGetDeviceIDs(platforms[platform], dev_type, 0, NULL, &nDevices);
+		// search the device type in all platforms
+		for(int p = 0; p < nPlatforms; p++){
+			err = clGetDeviceIDs(platforms[p], dev_type, 0, NULL, &nDevices);
+			if(err != CL_DEVICE_NOT_FOUND) break;
+		}
 		if(err == CL_DEVICE_NOT_FOUND)
 		{
 			fprintf(stderr,"No supported device of requested type found. Falling back to CPU.\n");
@@ -179,7 +196,6 @@ cl_device_id _ocd_get_device(int platform, int device, cl_int dev_type, int comp
 
 	//if compute-units option used, check the device is CPU
 	if(compute_units != -1){
-		cl_device_type device_type;
     	err = clGetDeviceInfo(devices[device], CL_DEVICE_TYPE, sizeof (device_type), &device_type, NULL);
     	CHECK_ERROR(err);	
 		if(device_type != CL_DEVICE_TYPE_CPU)
