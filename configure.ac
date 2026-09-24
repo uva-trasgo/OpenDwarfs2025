@@ -98,7 +98,14 @@ AC_ARG_WITH([board],
    [BOARD_NAME=""]
 )
 
-# 3. Compiler & flag validation
+# 3. Parallel compilation flag
+AC_ARG_WITH([parallel-compilation],
+   [AS_HELP_STRING([--with-parallel-compilation=NUMBER], [Number of processors to use in parallel in compilation])],
+   [PARALLEL_PROCS=$withval],
+   [PARALLEL_PROCS=""]
+)
+
+# 4. Compiler & flag validation
 if test "$enable_aot_emulation" = "yes" && test "$enable_aoc_board_compilation" = "yes"; then
    AC_MSG_ERROR([Cannot enable both --enable-aot-emulation and --enable-aoc-board-compilation. Please choose one.])
 fi
@@ -121,13 +128,19 @@ if test "$enable_aot_emulation" = "yes" || test "$enable_aoc_board_compilation" 
       else
          AC_MSG_ERROR([--enable-aoc-board-compilation requires --with-board-package=<path> or --with-board=<name>])
       fi
-      AOC_FLAGS="-v -report -fast-compile -I. ${AOC_BOARD_ARG}"
+      # FPGA parallel compilation flag
+      if test -n "$PARALLEL_PROCS"; then
+         AOC_PARALLEL_ARG="-parallel=${PARALLEL_PROCS}"
+      else
+         AOC_PARALLEL_ARG=""
+      fi
+      AOC_FLAGS="-v -report -I. ${AOC_BOARD_ARG} ${AOC_PARALLEL_ARG}"
    fi
 fi
 
 AC_SUBST([AOC_FLAGS])
 
-# 4. Automake Conditionals
+# 5. Automake Conditionals
 AM_CONDITIONAL([BUILD_AOT], [test "$enable_aot_emulation" = "yes" || test "$enable_aoc_board_compilation" = "yes"])
 AM_CONDITIONAL([BUILD_AOT_EMULATION], [test "$enable_aot_emulation" = "yes"])
 AM_CONDITIONAL([BUILD_AOC_BOARD], [test "$enable_aoc_board_compilation" = "yes"])
