@@ -18,8 +18,8 @@ maximum( int a,
 
 }
 
-__attribute__((num_simd_work_items(2)))
-__attribute__((num_compute_units(2)))
+// __attribute__((num_simd_work_items(2))) //To much optimization for some boards
+__attribute__((num_compute_units(1)))
 __attribute__((reqd_work_group_size(16,1,1)))
 	__kernel void
 needle_opencl_shared_1(  __global int* restrict referrence,
@@ -77,8 +77,8 @@ needle_opencl_shared_1(  __global int* restrict referrence,
 
 }
 
-__attribute__((num_simd_work_items(2)))
-__attribute__((num_compute_units(2)))
+// __attribute__((num_simd_work_items(2))) //To much optimization for some boards
+__attribute__((num_compute_units(1)))
 __attribute__((reqd_work_group_size(16,1,1)))
 	__kernel void
 needle_opencl_shared_2(  __global int* restrict referrence,
