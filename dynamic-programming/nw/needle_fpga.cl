@@ -18,8 +18,8 @@ maximum( int a,
 
 }
 
-// __attribute__((num_simd_work_items(2))) //To much optimization for some boards
-__attribute__((num_compute_units(1)))
+__attribute__((num_simd_work_items(2))) //To much optimization for some boards
+__attribute__((num_compute_units(2)))
 __attribute__((reqd_work_group_size(16,1,1)))
 	__kernel void
 needle_opencl_shared_1(  __global int* restrict referrence,
@@ -41,7 +41,7 @@ needle_opencl_shared_1(  __global int* restrict referrence,
 	//all values needed in the next step have been calculated and stored in local memory in temp.
 	//This whole loop calculates up to the main anti-diagonal, i.e., [1][4] along [4][1].
 
-        #pragma unroll 2
+    // #pragma unroll 2
 	for( int m = 0 ; m < BLOCK_SIZE ; m++){
 
 		if ( tx <= m ){
@@ -59,7 +59,7 @@ needle_opencl_shared_1(  __global int* restrict referrence,
 	}
 
 	//Same as above, but for the lower right part of the matrix.
-       #pragma unroll 2
+    // #pragma unroll 2
 	for( int m = BLOCK_SIZE - 2 ; m >=0 ; m--){
 
 		if ( tx <= m){
@@ -77,8 +77,8 @@ needle_opencl_shared_1(  __global int* restrict referrence,
 
 }
 
-// __attribute__((num_simd_work_items(2))) //To much optimization for some boards
-__attribute__((num_compute_units(1)))
+__attribute__((num_simd_work_items(2))) //To much optimization for some boards
+__attribute__((num_compute_units(2)))
 __attribute__((reqd_work_group_size(16,1,1)))
 	__kernel void
 needle_opencl_shared_2(  __global int* restrict referrence,
@@ -96,7 +96,7 @@ needle_opencl_shared_2(  __global int* restrict referrence,
 	int b_index_y = block_width - bx -1;
 	int index   = cols * BLOCK_SIZE * b_index_y + BLOCK_SIZE * b_index_x + tx + ( cols + 1 );
 
-       #pragma unroll 2
+    // #pragma unroll 2
 	for( int m = 0 ; m < BLOCK_SIZE ; m++){
 
 		if ( tx <= m ){
@@ -113,7 +113,7 @@ needle_opencl_shared_2(  __global int* restrict referrence,
 
 	}
 
-       #pragma unroll 2
+    // #pragma unroll 2
 	for( int m = BLOCK_SIZE - 2 ; m >=0 ; m--){
 
 		if ( tx <= m){
