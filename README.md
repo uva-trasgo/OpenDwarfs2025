@@ -75,6 +75,7 @@ To build:
     automake
     libtool
     gcc
+    g++
     maker
 
 To build for FPGA:
