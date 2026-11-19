@@ -10,7 +10,7 @@ association process.
 Running
 -------
 
-Usage: tdm [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <data path> <intervals path> <episodes path> <threads>
+Usage: `tdm [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <data path> <intervals path> <episodes path> <threads>`
 
     <data path>         :file containing temporal database (in csv format)
     <intervals path>    :file containing temporal constraints 
@@ -22,4 +22,4 @@ Usage: tdm [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <da
     <type>          : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
     <compute-units> : Optional flag to specify number of compute-units to use on CPU 	
 
-Example: ./tdm ../test/finite-state-machine/tdm/sim-64-size200.csv ../test/finite-state-machine/tdm/ivl.txt ../test/finite-state-machine/tdm/30-episodes.txt 128
+Example: `./tdm ../test/finite-state-machine/tdm/sim-64-size200.csv ../test/finite-state-machine/tdm/ivl.txt ../test/finite-state-machine/tdm/30-episodes.txt 128`

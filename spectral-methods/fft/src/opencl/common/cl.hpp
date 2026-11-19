@@ -140,7 +140,11 @@
 #ifndef CL_HPP_
 #define CL_HPP_
 
-#define CL_TARGET_OPENCL_VERSION 110//elimina warnings de OpenCL version
+#ifdef CL_TARGET_OPENCL_VERSION
+#undef CL_TARGET_OPENCL_VERSION
+#endif // CL_TARGET_OPENCL_VERSION
+
+#define CL_TARGET_OPENCL_VERSION 110
 
 #ifdef _WIN32
 #include <windows.h>

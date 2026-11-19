@@ -11,21 +11,10 @@ Note: This application belongs to the SHOC suite
 Running
 -------
 
-Usage: clfft [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --][--2D ]
-                 [--configFile value]
-                 [--device n1,n2,...]
-                 [--help ]
-                 [--infoDevices ]
-                 [--passes number]
-                 [--platform number]
-                 [--pts number]
-                 [--pts1 number]
-                 [--pts2 number]
-                 [--quiet ]
-                 [--size n1,n2,...]
-                 [--verbose ]
+Usage: `clfft [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --][--2D ] [--configFile value] [--device n1,n2,...] [--help ] [--infoDevices ] [--passes number] [--platform number] [--pts number] [--pts1 number] [--pts2 number] [--quiet ] [--size n1,n2,...] [--verbose ]`
 
-Available Options: 
+Available Options:
+
         --2D                     2D FFT
     -c, --configFile             specify configuration file
     -h, --help                   print this usage
@@ -43,7 +32,7 @@ Available Options:
 	<type>		    : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
 	<compute-units> : Optional flag to specify number of compute-units to use on CPU 	
 
-Example: clfft --pts 1
+Example: `clfft --pts 1`
 
 Notes
 -----

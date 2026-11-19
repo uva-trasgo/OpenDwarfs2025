@@ -20,7 +20,11 @@
 #ifndef __CALCULATIONS_H__
 #define __CALCULATIONS_H__
 
-#define CL_TARGET_OPENCL_VERSION 110//Definida aqui elimina el Warning message de OpenCL
+#ifdef CL_TARGET_OPENCL_VERSION
+#undef CL_TARGET_OPENCL_VERSION
+#endif // CL_TARGET_OPENCL_VERSION
+
+#define CL_TARGET_OPENCL_VERSION 110
 
 #include "structures.h"
 
