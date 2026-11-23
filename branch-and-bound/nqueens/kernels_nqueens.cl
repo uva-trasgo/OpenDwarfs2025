@@ -7,7 +7,7 @@
 
 #ifndef USE_ATOMICS
 #define USE_ATOMICS
-#endif
+#endif // USE_ATOMICS
 
 #ifdef USE_ATOMICS
 #pragma OPENCL EXTENSION cl_khr_global_int32_base_atomics : enable
