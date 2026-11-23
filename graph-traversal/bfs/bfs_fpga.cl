@@ -76,7 +76,7 @@
 // 	}	
 // }
 
-#define UNROLL_FACTOR 4  // 2 or 4 gives the best balance on FPGA DDR channels
+#define UNROLL_FACTOR 4  // 2 or 4 give the best balance for resource usage - memory transfer throughput
 
 typedef struct
 {
@@ -127,5 +127,5 @@ __kernel void kernel2(__global int* restrict g_graph_mask,
 		g_graph_visited[tid] = 1;
 		*g_over = 1;
 		g_updating_graph_mask[tid] = 0;
-	}    
+	}
 }

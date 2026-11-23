@@ -80,8 +80,8 @@ To build:
 
 To build for FPGA:
 
-    aoc (We have only tested with version 21.2.0 but other versions may work)
-    FPGA board Packages (of the FPGA wanted)
+    aoc (Tested with versions 21.2.0 and 20.2.0, other versions may work)
+    FPGA Board Packages (of the FPGA device to use)
 
 To run:
 

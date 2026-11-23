@@ -37,7 +37,7 @@ gem-all-local:
 gem-exec-local:
 	cp $(top_srcdir)/n-body-methods/gem/calculate_potential.cl ${DESTDIR}${bindir}
 
-# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+# Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
 if BUILD_AOT_EMULATION
 all_local += calculate_potential.aocx
 exec_local += dwarf-gem-fpga-exec-local

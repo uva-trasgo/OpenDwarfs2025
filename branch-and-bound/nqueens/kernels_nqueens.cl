@@ -19,7 +19,7 @@
 
 #ifndef WORK_ITEMS
 #define WORK_ITEMS 256
-#endif
+#endif // WORK_ITEMS
 
 inline int bit_scan(unsigned int x)
 {

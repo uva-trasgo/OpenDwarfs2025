@@ -22,7 +22,7 @@ nw-exec-local:
 	cp $(top_srcdir)/dynamic-programming/nw/needle_kernel_opt_gpu.cl ${DESTDIR}${bindir}
 	cp $(top_srcdir)/dynamic-programming/nw/needle_fpga.cl ${DESTDIR}${bindir}
 
-# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+# Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
 if BUILD_AOT
 all_local += needle_kernel.aocx needle_kernel_opt_fpga.aocx
 exec_local += dwarf-needle-fpga-exec-local
