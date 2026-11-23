@@ -1,6 +1,6 @@
 #ifndef BLOCK_SIZE
 #define BLOCK_SIZE 16
-#endif
+#endif // BLOCK_SIZE
 
 	__kernel void 
 lud_diagonal(__global float *m, int matrix_dim, int offset)

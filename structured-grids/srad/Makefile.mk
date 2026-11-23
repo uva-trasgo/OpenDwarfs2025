@@ -22,7 +22,7 @@ srad-exec-local:
 	cp $(top_srcdir)/structured-grids/srad/srad_kernel.cl ${DESTDIR}${bindir}
 	cp $(top_srcdir)/structured-grids/srad/srad_kernel_opt_gpu.cl ${DESTDIR}${bindir}
 
-# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+# Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
 if BUILD_AOT_EMULATION
 all_local += srad_kernel.aocx
 exec_local += dwarf-srad-fpga-exec-local

@@ -17,7 +17,7 @@ Note: This application was ported from the Rodinia Suite
 Running
 -------
 
-Usage: kmeans [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [options] -i <filename>
+Usage: `kmeans [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] [options] -i <filename>`
 
     -i filename      :file containing data to be clustered
     -m max_nclusters :maximum number of clusters allowed    [default=5]
@@ -33,4 +33,4 @@ Usage: kmeans [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] 
     <type>		    : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
     <compute-units> : Optional flag to specify number of compute-units to use on CPU 
     
-Example: kmeans -o -i test/dense-linear-algebra/kmeans/100
+Example: `kmeans -o -i test/dense-linear-algebra/kmeans/100`

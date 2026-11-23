@@ -15,7 +15,7 @@ Note: This application was ported from the Rodinia Suite
 Running
 -------
 
-Usage: needle [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <length of sequences> <penalty value>  
+Usage: `needle [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <length of sequences> <penalty value>` 
 
     -d dimensions   : x and y dimensions of the problem
     -p penalty      : penalty value
@@ -26,7 +26,7 @@ Usage: needle [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] 
     <type>          : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)
     <compute-units> : Optional flag to specify number of compute-units to use on CPU 	
     
-Example: needle -d 256 -p 1 -b 16
+Example: `needle -d 256 -p 1 -b 16`
 
 Note: This program generate two sequences randomly. Please specify your own
       sequences for different uses. At the current stage, the program only

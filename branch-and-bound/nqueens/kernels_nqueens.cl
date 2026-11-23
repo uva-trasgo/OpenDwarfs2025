@@ -7,7 +7,7 @@
 
 #ifndef USE_ATOMICS
 #define USE_ATOMICS
-#endif
+#endif // USE_ATOMICS
 
 #ifdef USE_ATOMICS
 #pragma OPENCL EXTENSION cl_khr_global_int32_base_atomics : enable
@@ -19,7 +19,7 @@
 
 #ifndef WORK_ITEMS
 #define WORK_ITEMS 256
-#endif
+#endif // WORK_ITEMS
 
 inline int bit_scan(unsigned int x)
 {

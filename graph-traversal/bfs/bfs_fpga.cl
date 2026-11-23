@@ -49,5 +49,5 @@ __kernel void kernel2(__global int* restrict g_graph_mask,
 		g_graph_visited[tid] = 1;
 		*g_over = 1;
 		g_updating_graph_mask[tid] = 0;
-	}    
+	}
 }

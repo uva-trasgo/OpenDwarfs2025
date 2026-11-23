@@ -11,7 +11,7 @@ the unknown parameters of a hidden Markov model (HMM).
 Running
 -------
 
-Usage: bwa_hmm [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] (see examples below for available run parameters, while keeping some parameters fixed)
+Usage: `bwa_hmm [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] (see examples below for available run parameters, while keeping some parameters fixed)`
 
     -n <number>     : value for state (n), must precede -v n
     -t <number>     : value for observation (t), must precede -v t
@@ -25,10 +25,10 @@ Usage: bwa_hmm [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --]
     
 Example:
 
-Vary state (n) with fixed S = 2, T = 1000
-	$ ./bwa_hmm -n <number> -v n
-Vary symbols (s) with fixed N = 60, T = 1000
-	$ ./bwa_hmm -s <number> -v s
-Vary observations (t) with fixed N = 60, S = 2
-	$ ./bwa_hmm -t <number> -v t
+* Vary state (n) with fixed S = 2, T = 1000
+	`$ ./bwa_hmm -n <number> -v n`
+* Vary symbols (s) with fixed N = 60, T = 1000
+	`$ ./bwa_hmm -s <number> -v s`
+* Vary observations (t) with fixed N = 60, S = 2
+	`$ ./bwa_hmm -t <number> -v t`
 

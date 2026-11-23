@@ -20,7 +20,7 @@ tdm-exec-local:
 	cp $(top_srcdir)/finite-state-machine/tdm/tdm_ocl_kernel.cl ${DESTDIR}${bindir}
 	cp $(top_srcdir)/finite-state-machine/tdm/types.h ${DESTDIR}${bindir}
 
-# New: Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
+# Compilation targets for FPGA Emulation if --enable-aot-emulation is passed
 if BUILD_AOT_EMULATION
 all_local += tdm_ocl_kernel.aocx
 exec_local += dwarf-tdm-fpga-exec-local

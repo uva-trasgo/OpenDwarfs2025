@@ -15,7 +15,7 @@ Note: This application was ported from the Rodinia Suite
 Running
 -------
 
-Usage: bfs [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] -i <filename> [-l <localWorkSize>]
+Usage: `bfs [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] -i <filename> [-l <localWorkSize>]`
 
     -i <filename>        : name of the graph file
     -l | --localWorkSize : specify local work size
@@ -26,4 +26,4 @@ Usage: bfs [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] -i 
     <type>		    : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
     <compute-units> : Optional flag to specify number of compute-units to use on CPU 	
     
-Example: bfs -i test/graph-traversal/bfs/medium_graph.txt -l 128
+Example: `bfs -i test/graph-traversal/bfs/medium_graph.txt -l 128`

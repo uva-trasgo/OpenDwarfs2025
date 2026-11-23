@@ -11,7 +11,7 @@ description of the Needleman-Wunsch global sequence alignment algorithm.
 Running
 -------
 
-Usage: swat [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <queryFile> <dbFile> [<openPenalty> <extensionPenalty> <workGroups>]
+Usage: `swat [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <queryFile> <dbFile> [<openPenalty> <extensionPenalty> <workGroups>]`
 
     queryFile           :filename of query sequence
     dbFile              :filename of sequence database
@@ -32,8 +32,6 @@ Example:
     #aligns query2K2 against sampledb2K2 with modified open penalty
     swat quary2K2 sampledb2K2 10.0 0.5 14
 
-Notes:
-
-    The "workGroups" parameter, including the default of 14, is only a request.
-    The algorithm requires workGroups be <= the number of compute units on the
-    device, and is automatically scaled downwards if necessary.
+Notes:    
+* The "workGroups" parameter, including the default of 14, is only a request. 
+* The algorithm requires workGroups be <= the number of compute units on the device, and is automatically scaled downwards if necessary.

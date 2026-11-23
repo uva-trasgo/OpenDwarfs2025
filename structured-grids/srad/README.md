@@ -16,8 +16,8 @@ Running
 
 In srad.h, define either GPU or CPU computation.
 
-Usage: srad [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <rows> <columns> <y1 position of speckle> <y2 position of speckle>
-            <x1 position of speckle> <x2 position of speckle> <lambda value> <num iterations> [-B <blocksize>] [-o]
+Usage: `srad [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <rows> <columns> <y1 position of speckle> <y2 position of speckle>
+            <x1 position of speckle> <x2 position of speckle> <lambda value> <num iterations> [-B <blocksize>] [-o]`
 
       <rows>             - number of rows
       <columns>          - number of cols
@@ -35,7 +35,7 @@ Usage: srad [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <r
       <type>		    : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
       <compute-units> : Optional flag to specify number of compute-units to use on CPU 	
 
-Example: srad 256 256 0 127 0 127 0.5 2
+Example: `srad 256 256 0 127 0 127 0.5 2`
 
 Note: Currently, the GPU implementation can only support x-, y-dimensions that
       can be divided by 16.

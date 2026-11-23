@@ -12,7 +12,7 @@ Copyright 2009, Andrew Corrigan, acorrigan@gmu.edu
 Running
 -------
 
-Usage: cfd [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <filename>
+Usage: `cfd [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <filename>`
 
     filename	: the name of the file from which to read data.
 
@@ -21,4 +21,4 @@ Usage: cfd [[-p <platform> -d <device> | -t <type>] [-c <compute-units>] --] <fi
 	<type>		    : device type to use (0:CPU, 1:GPU, 2:MIC, 3:FPGA)	
 	<compute-units> : Optional flag to specify number of compute-units to use on CPU 
 
-Example: cfd test/unstructured-grids/cfd/fvcorr.domn.097K
+Example: `cfd test/unstructured-grids/cfd/fvcorr.domn.097K`
