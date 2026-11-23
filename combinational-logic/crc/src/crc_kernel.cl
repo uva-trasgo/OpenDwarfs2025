@@ -39,8 +39,7 @@ __kernel void crc32_slice8(	__global const uint* restrict data,
 	{
         one = data[i++];
 		//currentChar = (uchar) &one; //for executions in Nvidia Tesla cards
-		//currentChar = (unsigned char*) &one;
-		currentChar = &one; //casting not needed and causes issues 
+		currentChar = (unsigned char*) &one;
         j=0;
 
 		while (length_bytes && j < 4) 

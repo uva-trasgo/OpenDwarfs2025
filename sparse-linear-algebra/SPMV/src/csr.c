@@ -17,7 +17,7 @@
 #include "../inc/common.h"
 #include "../inc/sparse_formats.h"
 #ifdef __FPGA__
-    #include "cl_ext.h"
+    #include "CL/cl_ext_intelfpga.h"
 #endif
 
 #define START_GTOD_TIMER { \
@@ -66,7 +66,7 @@ void output_func_host(float* matrix,const unsigned int sz,char* file_path)
 }
 
 /**
- * Compares N float values and prints error msg if any corresponding entries differ by greater than .001
+ * Compares N float values and prints error msg if any corresponding entries differ by greater than 1e-5
  */
 void float_array_comp(const float* control, const float* experimental, const unsigned int N, const unsigned int exec_num)
 {
@@ -75,10 +75,10 @@ void float_array_comp(const float* control, const float* experimental, const uns
 	for (j = 0; j < N; j++)
 	{
 		diff = experimental[j] - control[j];
-		if(fabsf(diff) > .001)
+		if(fabsf(diff) > 1e-5)
 		{
 			perc = fabsf(diff/control[j]) * 100;
-			fprintf(stderr,"Possible error on exec #%u, difference of %.3f (%.1f%% error) [control=%.3f, experimental=%.3f] at row %d \n",exec_num,diff,perc,control[j],experimental[j],j);
+			fprintf(stderr,"Possible error on exec #%u, difference of %.6f (%.2f%% error) [control=%.6f, experimental=%.6f] at row %d \n",exec_num,diff,perc,control[j],experimental[j],j);
 		}
 	}
 }
@@ -310,12 +310,12 @@ int main(int argc, char** argv)
 	{
 		if(verbosity >= 2) printf("Creating Data Buffers for Matrix #%d of %d...\n",k+1,num_matrices);
 		if (_deviceType == 3){
-#if defined(CL_MEM_BANK_1_ALTERA) && defined(CL_MEM_BANK_2_ALTERA)
-			csrCreateBuffer(&context,&csr_ap[k],sizeof(int)*(csr[k].num_rows+1),CL_MEM_BANK_1_ALTERA | CL_MEM_READ_ONLY,"csr_ap",verbosity);
-			csrCreateBuffer(&context,&x_loc[k],sizeof(float)*csr[k].num_cols,CL_MEM_BANK_1_ALTERA | CL_MEM_READ_ONLY,"x_loc",verbosity);
-			csrCreateBuffer(&context,&y_loc[k],sizeof(float)*csr[k].num_rows,CL_MEM_BANK_2_ALTERA | CL_MEM_READ_WRITE,"y_loc",verbosity);
-			csrCreateBuffer(&context,&csr_aj[k],sizeof(int)*csr[k].num_nonzeros,CL_MEM_BANK_1_ALTERA | CL_MEM_READ_ONLY,"csr_aj",verbosity);
-			csrCreateBuffer(&context,&csr_ax[k],sizeof(float)*csr[k].num_nonzeros,CL_MEM_BANK_2_ALTERA | CL_MEM_READ_ONLY,"csr_ax",verbosity);
+#if defined(CL_CHANNEL_1_INTELFPGA) && defined(CL_CHANNEL_2_INTELFPGA)
+			csrCreateBuffer(&context,&csr_ap[k],sizeof(int)*(csr[k].num_rows+1),CL_CHANNEL_1_INTELFPGA | CL_MEM_READ_ONLY,"csr_ap",verbosity);
+			csrCreateBuffer(&context,&x_loc[k],sizeof(float)*csr[k].num_cols,CL_CHANNEL_1_INTELFPGA | CL_MEM_READ_ONLY,"x_loc",verbosity);
+			csrCreateBuffer(&context,&y_loc[k],sizeof(float)*csr[k].num_rows,CL_CHANNEL_2_INTELFPGA | CL_MEM_READ_WRITE,"y_loc",verbosity);
+			csrCreateBuffer(&context,&csr_aj[k],sizeof(int)*csr[k].num_nonzeros,CL_CHANNEL_1_INTELFPGA | CL_MEM_READ_ONLY,"csr_aj",verbosity);
+			csrCreateBuffer(&context,&csr_ax[k],sizeof(float)*csr[k].num_nonzeros,CL_CHANNEL_2_INTELFPGA | CL_MEM_READ_ONLY,"csr_ax",verbosity);
 #else
 			fprintf(stderr, "Must use Altera OpenCL SDK to be able to run with the FPGA option!\n");
 			exit(-1);

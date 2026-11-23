@@ -68,6 +68,82 @@ if test ! -z "$OPENCL_SDK_PREFIX" ; then
 fi
 AC_SUBST(OPENCL_SDK_PREFIX)
 
+# ==============================================================================
+# OpenCL AOT Compilation (AOC) Configuration (Emulation & FPGA Board Synthesis)
+# ==============================================================================
+
+# 1. Mode selection flags
+AC_ARG_ENABLE([aot-emulation],
+   [AS_HELP_STRING([--enable-aot-emulation], [Compile OpenCL kernels AOT for CPU emulation (requires aoc)])],
+   [enable_aot_emulation=$enableval],
+   [enable_aot_emulation=no]
+)
+
+AC_ARG_ENABLE([aoc-board-compilation],
+   [AS_HELP_STRING([--enable-aoc-board-compilation], [Compile OpenCL kernels for an FPGA board (requires aoc and board package)])],
+   [enable_aoc_board_compilation=$enableval],
+   [enable_aoc_board_compilation=no]
+)
+
+# 2. Board specification flags
+AC_ARG_WITH([board-package],
+   [AS_HELP_STRING([--with-board-package=DIR], [Path to custom FPGA Board Package (e.g., $HOME/FPGABoards/de10_agilex)])],
+   [BOARD_PACKAGE=$withval],
+   [BOARD_PACKAGE=""]
+)
+
+AC_ARG_WITH([board],
+   [AS_HELP_STRING([--with-board=NAME], [FPGA Board name for installed boards (e.g., de10_agilex)])],
+   [BOARD_NAME=$withval],
+   [BOARD_NAME=""]
+)
+
+# 3. Parallel compilation flag
+AC_ARG_WITH([parallel-compilation],
+   [AS_HELP_STRING([--with-parallel-compilation=NUMBER], [Number of processors to use in parallel in compilation])],
+   [PARALLEL_PROCS=$withval],
+   [PARALLEL_PROCS=""]
+)
+
+# 4. Compiler & flag validation
+if test "$enable_aot_emulation" = "yes" && test "$enable_aoc_board_compilation" = "yes"; then
+   AC_MSG_ERROR([Cannot enable both --enable-aot-emulation and --enable-aoc-board-compilation. Please choose one.])
+fi
+
+if test "$enable_aot_emulation" = "yes" || test "$enable_aoc_board_compilation" = "yes"; then
+   AC_DEFINE(__FPGA__, 1, [Use FPGA])
+   AC_PATH_PROG([AOC_COMPILER], [aoc])
+   if test -z "$AOC_COMPILER"; then
+      AC_MSG_ERROR([aoc (Altera Offline Compiler) is required for AOT compilation but was not found in PATH])
+   fi
+
+   if test "$enable_aot_emulation" = "yes"; then
+      AOC_FLAGS="-march=emulator"
+   else
+      # FPGA Board compilation
+      if test -n "$BOARD_PACKAGE"; then
+         AOC_BOARD_ARG="-board-package=${BOARD_PACKAGE}"
+      elif test -n "$BOARD_NAME"; then
+         AOC_BOARD_ARG="-board=${BOARD_NAME}"
+      else
+         AC_MSG_ERROR([--enable-aoc-board-compilation requires --with-board-package=<path> or --with-board=<name>])
+      fi
+      # FPGA parallel compilation flag
+      if test -n "$PARALLEL_PROCS"; then
+         AOC_PARALLEL_ARG="-parallel=${PARALLEL_PROCS}"
+      else
+         AOC_PARALLEL_ARG=""
+      fi
+      AOC_FLAGS="-v -report -I. ${AOC_BOARD_ARG} ${AOC_PARALLEL_ARG}"
+   fi
+fi
+
+AC_SUBST([AOC_FLAGS])
+
+# 5. Automake Conditionals
+AM_CONDITIONAL([BUILD_AOT], [test "$enable_aot_emulation" = "yes" || test "$enable_aoc_board_compilation" = "yes"])
+AM_CONDITIONAL([BUILD_AOT_EMULATION], [test "$enable_aot_emulation" = "yes"])
+AM_CONDITIONAL([BUILD_AOC_BOARD], [test "$enable_aoc_board_compilation" = "yes"])
 
 ### We need OpenCL
 AC_ARG_WITH([opencl], AS_HELP_STRING([--with-opencl],[path to OpenCL]),
@@ -77,40 +153,15 @@ if test ! -z "$OPENCL_PREFIX" ; then
    PAC_APPEND_FLAG([-Wl,-rpath=${OPENCL_PREFIX}],[LDFLAGS])
 fi
 
-###Specify build with Altera OpenCL SDK
-AC_ARG_WITH([AOCL], AS_HELP_STRING([--with-AOCL],[path to Altera OpenCl SDK]),
-	[AOCL_ROOT=$withval],[AOCL_ROOT=])
-
-
 AC_CHECK_HEADER([CL/cl.h], [HEADER_LINUX=1], [])
 AC_CHECK_HEADER([OpenCL/OpenCL.h], [HEADER_APPLE=1], [])
 
 
 if test ! -z "$HEADER_LINUX";
 then
-    AC_DEFINE(OPENCL_HEADER_CL_CL, 1, [use non-apple header])
-    if test -n "$AOCL_ROOT";
-    then	###If AOCL option passed (build for Altera FPGA)
-   		AC_DEFINE(__FPGA__, , [Use FPGA])
-   		PAC_APPEND_FLAG([-I${AOCL_ROOT}/host/include],[CPPFLAGS])
-   		PAC_APPEND_FLAG([-I${AOCL_ROOT}/host/include/CL],[CPPFLAGS])
-		PAC_APPEND_FLAG([-L${AOCL_ROOT}/board/bittware/linux64/lib],[LDFLAGS])
-		PAC_APPEND_FLAG([-L${AOCL_ROOT}/host/linux64/lib],[LDFLAGS])
-		PAC_APPEND_FLAG([-Wl,-rpath=${AOCL_ROOT}/board/bittware/linux64/lib],[LDFLAGS])
-		PAC_APPEND_FLAG([-Wl,-rpath=${AOCL_ROOT}/host/linux64/lib],[LDFLAGS])
-		PAC_APPEND_FLAG([-lalteracl],[LIBS])
-		PAC_APPEND_FLAG([-ldl],[LIBS])
-		PAC_APPEND_FLAG([-lacl_emulator_kernel_rt],[LIBS])
-		PAC_APPEND_FLAG([-laltera_s5phq_mmd],[LIBS])
-		PAC_APPEND_FLAG([-lalterahalmmd],[LIBS])
-		PAC_APPEND_FLAG([-lelf],[LIBS])
-		PAC_APPEND_FLAG([-lrt],[LIBS])
-		PAC_APPEND_FLAG([-lstdc++],[LIBS])
-    else	### default (CPU or GPU)
-    ### Check for the libraries that we need
-    	AC_CHECK_LIB(OpenCL,clGetPlatformIDs,[PAC_PREPEND_FLAG([-lOpenCL],[LIBS])],
-        AC_MSG_ERROR([OpenCL library not found]))
-    fi
+   AC_DEFINE(OPENCL_HEADER_CL_CL, 1, [use non-apple header])
+   AC_CHECK_LIB(OpenCL,clGetPlatformIDs,[PAC_PREPEND_FLAG([-lOpenCL],[LIBS])],
+   AC_MSG_ERROR([OpenCL library not found]))
 else
     if test ! -z "$HEADER_APPLE" ; then
         AC_DEFINE(OPENCL_HEADER_LONG, 1 , [use apple header])
@@ -119,17 +170,6 @@ else
         AC_MSG_ERROR([OpenCL header not found])
     fi
 fi
-
-
-###AC_ARG_WITH([opts], AC_HELP_STRING([--with-opts],[path to Opts argument library]),
-###	[OPTS_PREFIX=$withval],[OPTS_PREFIX=])
-###if test ! -z "$OPTS_PREFIX" ; then
-###   PAC_APPEND_FLAG([-L${OPTS_PREFIX}],[LDFLAGS])
-###   PAC_APPEND_FLAG([-I${OPTS_PREFIX}],[CPPFLAGS])
-###fi
-###AC_CHECK_LIB(opts,optsload,[PAC_PREPEND_FLAG([-lopts],[LIBS])],
-###	AC_MSG_ERROR([opts library not found]))
-
 
 AC_LANG_PUSH([C++])
 PAC_PUSH_FLAG([LIBS])

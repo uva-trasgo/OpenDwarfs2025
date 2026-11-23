@@ -33,7 +33,7 @@
 #define AOCL_ALIGNMENT 64
 
 #ifdef __FPGA__
-    #include "cl_ext.h"
+    #include "CL/cl_ext_intelfpga.h"
 #else 
     #define CL_MEM_BANK_1_ALTERA              (0)
     #define CL_MEM_BANK_2_ALTERA              (0)
@@ -272,23 +272,23 @@ void calc_potential_single_step(residue *residues,
 	r0 = A/2.;  /* might be tricky ... hrmmm */
 
 
-	res_c_s         = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_1_ALTERA, sizeof(cl_float)*nres,    NULL, &err[0]);
-	res_x_s         = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_2_ALTERA , sizeof(cl_float)*nres,    NULL, &err[1]);
-	res_y_s         = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_1_ALTERA , sizeof(cl_float)*nres,    NULL, &err[2]);
-	res_z_s         = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_2_ALTERA , sizeof(cl_float)*nres,    NULL, &err[3]);
-	at_c_s          = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_1_ALTERA , sizeof(cl_float)*natoms,  NULL, &err[4]);
-	at_x_s          = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_2_ALTERA , sizeof(cl_float)*natoms,  NULL, &err[5]);
-	at_y_s          = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_1_ALTERA , sizeof(cl_float)*natoms,  NULL, &err[6]);
-	at_z_s          = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_2_ALTERA , sizeof(cl_float)*natoms,  NULL, &err[7]);
-	vert_c_s        = clCreateBuffer( context, CL_MEM_READ_WRITE|CL_MEM_BANK_1_ALTERA, sizeof(cl_float)*nvert,   NULL, &err[8]);
-	vert_x_s        = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_2_ALTERA , sizeof(cl_float)*nvert,   NULL, &err[9]);
-	vert_y_s        = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_1_ALTERA , sizeof(cl_float)*nvert,   NULL, &err[10]);
-	vert_z_s        = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_2_ALTERA , sizeof(cl_float)*nvert,   NULL, &err[11]);
-	vert_x_p_s      = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_1_ALTERA , sizeof(cl_float)*nvert,   NULL, &err[12]);
-	vert_y_p_s      = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_2_ALTERA , sizeof(cl_float)*nvert,   NULL, &err[13]);
-	vert_z_p_s      = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_1_ALTERA , sizeof(cl_float)*nvert,   NULL, &err[14]);
-	atom_addrs_s    = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_2_ALTERA , sizeof(cl_int)*nres,      NULL, &err[15]);
-	atom_lengths_s  = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_MEM_BANK_1_ALTERA , sizeof(cl_int)*nres,      NULL, &err[16]);
+	res_c_s         = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_1_INTELFPGA, sizeof(cl_float)*nres,    NULL, &err[0]);
+	res_x_s         = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_2_INTELFPGA , sizeof(cl_float)*nres,    NULL, &err[1]);
+	res_y_s         = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_1_INTELFPGA , sizeof(cl_float)*nres,    NULL, &err[2]);
+	res_z_s         = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_2_INTELFPGA , sizeof(cl_float)*nres,    NULL, &err[3]);
+	at_c_s          = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_1_INTELFPGA , sizeof(cl_float)*natoms,  NULL, &err[4]);
+	at_x_s          = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_2_INTELFPGA , sizeof(cl_float)*natoms,  NULL, &err[5]);
+	at_y_s          = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_1_INTELFPGA , sizeof(cl_float)*natoms,  NULL, &err[6]);
+	at_z_s          = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_2_INTELFPGA , sizeof(cl_float)*natoms,  NULL, &err[7]);
+	vert_c_s        = clCreateBuffer( context, CL_MEM_READ_WRITE|CL_CHANNEL_1_INTELFPGA, sizeof(cl_float)*nvert,   NULL, &err[8]);
+	vert_x_s        = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_2_INTELFPGA , sizeof(cl_float)*nvert,   NULL, &err[9]);
+	vert_y_s        = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_1_INTELFPGA , sizeof(cl_float)*nvert,   NULL, &err[10]);
+	vert_z_s        = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_2_INTELFPGA , sizeof(cl_float)*nvert,   NULL, &err[11]);
+	vert_x_p_s      = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_1_INTELFPGA , sizeof(cl_float)*nvert,   NULL, &err[12]);
+	vert_y_p_s      = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_2_INTELFPGA , sizeof(cl_float)*nvert,   NULL, &err[13]);
+	vert_z_p_s      = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_1_INTELFPGA , sizeof(cl_float)*nvert,   NULL, &err[14]);
+	atom_addrs_s    = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_2_INTELFPGA , sizeof(cl_int)*nres,      NULL, &err[15]);
+	atom_lengths_s  = clCreateBuffer( context, CL_MEM_READ_ONLY|CL_CHANNEL_1_INTELFPGA , sizeof(cl_int)*nres,      NULL, &err[16]);
 
 
 	clEnqueueWriteBuffer ( commands, res_c_s       , CL_TRUE, 0, sizeof(cl_float)*nres,   res_c,        0, NULL, &ocdTempEvent);
