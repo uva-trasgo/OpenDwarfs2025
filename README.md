@@ -104,7 +104,7 @@ To build for FPGA emulation:
 
 To build for an specific FPGA board:
     
-    $ ../configure --enable-aoc-board-compilation [--with-board-package=(path to FPGA board package) | --with-board=(board name installed in DK board directory)] --with-opencl-sdk=(may be needed to specify the OpenCL SDK path)
+    $ ../configure --enable-aoc-board-compilation [--with-board-package=(path to FPGA board package) | --with-board=(board name installed in SDK board directory)] --with-opencl-sdk=(may be needed to specify the OpenCL SDK path)
 
 To build only the applications you select, call configure with the --with-apps
 option:

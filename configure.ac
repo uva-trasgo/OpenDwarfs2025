@@ -153,40 +153,15 @@ if test ! -z "$OPENCL_PREFIX" ; then
    PAC_APPEND_FLAG([-Wl,-rpath=${OPENCL_PREFIX}],[LDFLAGS])
 fi
 
-###Specify build with Altera OpenCL SDK DEPRECATED
-AC_ARG_WITH([AOCL], AS_HELP_STRING([--with-AOCL],[path to Altera OpenCl SDK]),
-	[AOCL_ROOT=$withval],[AOCL_ROOT=])
-
-
 AC_CHECK_HEADER([CL/cl.h], [HEADER_LINUX=1], [])
 AC_CHECK_HEADER([OpenCL/OpenCL.h], [HEADER_APPLE=1], [])
 
 
 if test ! -z "$HEADER_LINUX";
 then
-    AC_DEFINE(OPENCL_HEADER_CL_CL, 1, [use non-apple header])
-    ### if test -n "$AOCL_ROOT";
-    ### then	### If AOCL option passed (build for Altera FPGA)
-   		### AC_DEFINE(__FPGA__, , [Use FPGA])
-   		### PAC_APPEND_FLAG([-I${AOCL_ROOT}/host/include],[CPPFLAGS])
-   		### PAC_APPEND_FLAG([-I${AOCL_ROOT}/host/include/CL],[CPPFLAGS])
-		### PAC_APPEND_FLAG([-L${AOCL_ROOT}/board/bittware/linux64/lib],[LDFLAGS])
-		### PAC_APPEND_FLAG([-L${AOCL_ROOT}/host/linux64/lib],[LDFLAGS])
-		### PAC_APPEND_FLAG([-Wl,-rpath=${AOCL_ROOT}/board/bittware/linux64/lib],[LDFLAGS])
-		### PAC_APPEND_FLAG([-Wl,-rpath=${AOCL_ROOT}/host/linux64/lib],[LDFLAGS])
-		### PAC_APPEND_FLAG([-lalteracl],[LIBS])
-		### PAC_APPEND_FLAG([-ldl],[LIBS])
-		### PAC_APPEND_FLAG([-lacl_emulator_kernel_rt],[LIBS])
-		### PAC_APPEND_FLAG([-laltera_s5phq_mmd],[LIBS])
-		### PAC_APPEND_FLAG([-lalterahalmmd],[LIBS])
-		### PAC_APPEND_FLAG([-lelf],[LIBS])
-		### PAC_APPEND_FLAG([-lrt],[LIBS])
-		### PAC_APPEND_FLAG([-lstdc++],[LIBS])
-    ### else	### default (CPU or GPU)
-    ### Check for the libraries that we need
-    	AC_CHECK_LIB(OpenCL,clGetPlatformIDs,[PAC_PREPEND_FLAG([-lOpenCL],[LIBS])],
-      AC_MSG_ERROR([OpenCL library not found]))
-    ### fi
+   AC_DEFINE(OPENCL_HEADER_CL_CL, 1, [use non-apple header])
+   AC_CHECK_LIB(OpenCL,clGetPlatformIDs,[PAC_PREPEND_FLAG([-lOpenCL],[LIBS])],
+   AC_MSG_ERROR([OpenCL library not found]))
 else
     if test ! -z "$HEADER_APPLE" ; then
         AC_DEFINE(OPENCL_HEADER_LONG, 1 , [use apple header])
@@ -195,17 +170,6 @@ else
         AC_MSG_ERROR([OpenCL header not found])
     fi
 fi
-
-
-###AC_ARG_WITH([opts], AC_HELP_STRING([--with-opts],[path to Opts argument library]),
-###	[OPTS_PREFIX=$withval],[OPTS_PREFIX=])
-###if test ! -z "$OPTS_PREFIX" ; then
-###   PAC_APPEND_FLAG([-L${OPTS_PREFIX}],[LDFLAGS])
-###   PAC_APPEND_FLAG([-I${OPTS_PREFIX}],[CPPFLAGS])
-###fi
-###AC_CHECK_LIB(opts,optsload,[PAC_PREPEND_FLAG([-lopts],[LIBS])],
-###	AC_MSG_ERROR([opts library not found]))
-
 
 AC_LANG_PUSH([C++])
 PAC_PUSH_FLAG([LIBS])
